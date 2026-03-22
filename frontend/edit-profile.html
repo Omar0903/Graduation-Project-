@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/auth.js"></script>
+  <title>Edit Profile</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .edit-container {
+      width: 450px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #333;
+      color: white;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="edit-container">
+    <h1>Edit Profile</h1>
+
+    <label for="fName">First Name</label>
+    <input type="text" id="fName">
+
+    <label for="lName">Last Name</label>
+    <input type="text" id="lName">
+
+    <label for="userName">Username</label>
+    <input type="text" id="userName">
+
+    <label for="email">Email</label>
+    <input type="email" id="email">
+
+    <label for="phone">Phone</label>
+    <input type="text" id="phone">
+
+    <label for="address">Address</label>
+    <input type="text" id="address">
+
+    <label for="payment">Payment</label>
+    <select id="payment">
+      <option value="Cash">Cash</option>
+      <option value="Visa">Visa</option>
+      <option value="MasterCard">MasterCard</option>
+    </select>
+
+    <button id="saveBtn">Save Changes</button>
+  </div>
+
+  <script>
+    const isLoggedIn = localStorage.getItem("isLoggedIn") || sessionStorage.getItem("isLoggedIn");
+    const currentUser = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
+
+    if (isLoggedIn !== "true" || !currentUser) {
+      window.location.href = "login.html";
+    }
+
+    const fNameInput = document.getElementById("fName");
+    const lNameInput = document.getElementById("lName");
+    const userNameInput = document.getElementById("userName");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+    const addressInput = document.getElementById("address");
+    const paymentInput = document.getElementById("payment");
+    const saveBtn = document.getElementById("saveBtn");
+
+    fNameInput.value = localStorage.getItem("fname") || "";
+    lNameInput.value = localStorage.getItem("lname") || "";
+    userNameInput.value = localStorage.getItem("username") || "";
+    emailInput.value = localStorage.getItem("email") || "";
+    phoneInput.value = localStorage.getItem("phone") || "";
+    addressInput.value = localStorage.getItem("address") || "";
+    paymentInput.value = localStorage.getItem("payment") || "Cash";
+
+    saveBtn.addEventListener("click", () => {
+      const newFname = fNameInput.value.trim();
+      const newLname = lNameInput.value.trim();
+      const newUsername = userNameInput.value.trim();
+      const newEmail = emailInput.value.trim();
+      const newPhone = phoneInput.value.trim();
+      const newAddress = addressInput.value.trim();
+      const newPayment = paymentInput.value;
+
+      if (
+        newFname === "" ||
+        newLname === "" ||
+        newUsername === "" ||
+        newEmail === "" ||
+        newPhone === "" ||
+        newAddress === ""
+      ) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      localStorage.setItem("fname", newFname);
+      localStorage.setItem("lname", newLname);
+      localStorage.setItem("username", newUsername);
+      localStorage.setItem("email", newEmail);
+      localStorage.setItem("phone", newPhone);
+      localStorage.setItem("address", newAddress);
+      localStorage.setItem("payment", newPayment);
+
+      if (localStorage.getItem("isLoggedIn") === "true") {
+        localStorage.setItem("currentUser", newUsername);
+      }
+
+      if (sessionStorage.getItem("isLoggedIn") === "true") {
+        sessionStorage.setItem("currentUser", newUsername);
+      }
+
+      alert("Profile updated successfully");
+      window.location.href = "profile.html";
+    });
+  </script>
+</body>
+</html>

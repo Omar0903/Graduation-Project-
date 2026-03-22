@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/auth.js"></script>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="css/all.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .profile-container {
+      width: 450px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .profile-icon {
+      font-size: 60px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #222;
+    }
+
+    .info-box {
+      background: #f0f0f0;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .info-box p {
+      margin: 10px 0;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      background: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .btn:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-icon">
+        <i class="fa-regular fa-user"></i>
+      </div>
+      <h1>User Profile</h1>
+    </div>
+
+    <div class="info-box">
+      <p><strong>First Name:</strong> <span id="profileFname"></span></p>
+      <p><strong>Last Name:</strong> <span id="profileLname"></span></p>
+      <p><strong>Username:</strong> <span id="profileUsername"></span></p>
+      <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+      <p><strong>Phone:</strong> <span id="profilePhone"></span></p>
+      <p><strong>Address:</strong> <span id="profileAddress"></span></p>
+      <p><strong>Payment:</strong> <span id="profilePayment"></span></p>
+      <p><strong>Status:</strong> <span id="profileStatus"></span></p>
+    </div>
+
+    <div class="buttons">
+      <a href="header.html" class="btn">Back to Home</a>
+      <a href="edit-profile.html" class="btn">Edit Profile</a>
+    </div>
+  </div>
+
+  <script>
+    const isLoggedIn = localStorage.getItem("isLoggedIn") || sessionStorage.getItem("isLoggedIn");
+    const currentUser = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
+
+    if (isLoggedIn !== "true" || !currentUser) {
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("profileFname").textContent = localStorage.getItem("fname") || "";
+      document.getElementById("profileLname").textContent = localStorage.getItem("lname") || "";
+      document.getElementById("profileUsername").textContent = localStorage.getItem("username") || "";
+      document.getElementById("profileEmail").textContent = localStorage.getItem("email") || "";
+      document.getElementById("profilePhone").textContent = localStorage.getItem("phone") || "";
+      document.getElementById("profileAddress").textContent = localStorage.getItem("address") || "";
+      document.getElementById("profilePayment").textContent = localStorage.getItem("payment") || "";
+      document.getElementById("profileStatus").textContent = "Logged In";
+    }
+  </script>
+</body>
+</html>

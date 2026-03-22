@@ -1,0 +1,315 @@
+
+
+//////////////////////////////////////////////
+
+//dummy data---------------------------
+let cartItems = [];
+
+const dummyData = [
+    { title: "Modern Accent Chair", price: 199, imageUrl: "images/eee.jpeg" },
+    { title: "Elegant Lounge Chair", price: 210, imageUrl: "images/eee.jpeg" },
+    { title: "Stylish Sofa", price: 320, imageUrl: "images/eee.jpeg" },
+    { title: "Wooden Coffee Table", price: 150, imageUrl: "images/eee.jpeg" },
+    { title: "Minimal Side Table", price: 120, imageUrl: "images/eee.jpeg" },
+    { title: "Soft Fabric Armchair", price: 230, imageUrl: "images/eee.jpeg" },
+    { title: "Contemporary Dining Table", price: 280, imageUrl: "images/eee.jpeg" },
+    { title: "jsjsna", price: 230, imageUrl: "images/eee.jpeg" },
+  ];
+//---------------------
+
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const fileNameEl = document.getElementById("fileName");
+
+const previewImg = document.getElementById("previewImg");
+const previewWrap = document.getElementById("previewWrap");
+
+const resultsSection = document.getElementById("resultsSection");
+const resultsGrid = document.getElementById("resultsGrid");
+
+/*cart section */
+var cart_icon = document.querySelector(".cart")
+
+var cart_section = document.getElementById("cart_div")
+
+var exit_cart_section_mark = document.getElementById("exit_mark")
+
+// var before_discount = document.querySelector(".original-total")
+
+var finalprice = document.querySelector(".final-total")
+
+var discount_button = document.querySelector(".checkout-btn")
+
+var cart_counter = document.querySelector("#cart_counter")
+
+var cart_empty_text = document.querySelector(".cart_title")
+
+var cart_content = document.querySelector(".cart_content");
+
+
+var totalPrice = 0
+var c_counter = 0
+
+
+function addToCart(productIndex){
+
+  let existingItem = cartItems.find(item => item.index === productIndex);
+
+  if(existingItem){
+
+    existingItem.count++;
+
+  }else{
+
+    cartItems.push({
+      index: productIndex,
+      count: 1
+    });
+
+  }
+
+  c_counter++;
+  totalPrice += dummyData[productIndex].price
+  update_cart_items()
+  console.log(cartItems)
+  console.log(c_counter)
+  console.log(totalPrice)
+}
+
+//cart desinged function
+
+function update_cart_items(){
+
+  cart_content.innerHTML = "";
+
+  if(c_counter == 0){
+
+    cart_empty_text.style.display = "block";
+
+    cart_counter.innerHTML = "your cart (0)";
+
+    finalprice.innerHTML = "$0";
+
+    cart_content.innerHTML = `
+      <h2 class="cart_title">your cart is empty</h2>
+    `;
+
+    return;
+  }
+
+  cart_empty_text.style.display = "none";
+
+  finalprice.innerHTML = "$" + totalPrice;
+
+  cart_counter.innerHTML = "your cart (" + c_counter + ")";
+
+  cartItems.forEach(function(item){
+
+    var product = dummyData[item.index];
+
+    var cart_item = document.createElement("div");
+
+    cart_item.classList.add("cart-item");
+
+    cart_item.innerHTML = `
+      <i class="fa-solid fa-trash cart-delete" onclick="removeItem(${item.index})"></i>
+
+      <img src="${product.imageUrl}">
+
+      <div class="cart-info">
+        <p>${product.title}</p>
+        <span class="cart-price">$${product.price}</span>
+      </div>
+
+      <div class="qty-control">
+
+        <button onclick="decreaseQty(${item.index})">-</button>
+
+        <span>${item.count}</span>
+
+        <button onclick="increaseQty(${item.index})">+</button>
+
+      </div>
+    `;
+
+    cart_content.appendChild(cart_item);
+
+  });
+
+}
+
+
+cart_icon.onclick = function(){
+  
+    cart_section.style.display = "block"
+}
+
+exit_cart_section_mark.onclick = function(){
+    cart_section.style.display = "none";
+}
+
+//------------------------
+
+function isImageFile(file) {
+  return file && file.type && file.type.startsWith("image/");
+}
+
+function showFileName(name) {
+  fileNameEl.style.display = "block";
+  fileNameEl.textContent = name;
+}
+
+function hideFileName() {
+  fileNameEl.style.display = "none";
+  fileNameEl.textContent = "";
+}
+
+function showPreview(file) {
+  const url = URL.createObjectURL(file);
+  previewImg.src = url;
+
+  // show preview only after upload
+  previewWrap.classList.add("show");
+
+  // show results (dummy for now)============================
+  generateDummyResults();
+  resultsSection.style.display = "block";
+}
+//=========================================================================
+function clearPreview() {
+  previewImg.removeAttribute("src");
+  previewWrap.classList.remove("show");
+}
+
+uploadBtn.addEventListener("click", () => {
+  fileInput.click();
+});
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files?.[0];
+  if (!file) return;
+
+  if (!isImageFile(file)) {
+    alert("Please upload an image file only (jpg/png/webp).");
+    fileInput.value = "";
+    return;
+  }
+
+  showFileName(file.name);
+  showPreview(file);
+});
+
+// Drag & Drop
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropzone.classList.add("dragover");
+});
+
+dropzone.addEventListener("dragleave", () => {
+  dropzone.classList.remove("dragover");
+});
+
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("dragover");
+
+  const file = e.dataTransfer.files?.[0];
+  if (!file) return;
+
+  if (!isImageFile(file)) {
+    alert("Please drop an image file only (jpg/png/webp).");
+    return;
+  }
+
+  // Put file into input
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  fileInput.files = dt.files;
+
+  showFileName(file.name);
+  showPreview(file);
+});
+
+// Prevent browser from opening dropped file outside dropzone
+window.addEventListener("dragover", (e) => e.preventDefault());
+window.addEventListener("drop", (e) => e.preventDefault());
+
+// ===============================Dummy results==============================
+function generateDummyResults() {
+  // const dummyData = [
+  //   { title: "Modern Accent Chair", price: 199, imageUrl: "images/eee.jpeg" },
+  //   { title: "Elegant Lounge Chair", price: 210, imageUrl: "images/eee.jpeg" },
+  //   { title: "Stylish Sofa", price: 320, imageUrl: "images/eee.jpeg" },
+  //   { title: "Wooden Coffee Table", price: 150, imageUrl: "images/eee.jpeg" },
+  //   { title: "Minimal Side Table", price: 120, imageUrl: "images/eee.jpeg" },
+  //   { title: "Soft Fabric Armchair", price: 230, imageUrl: "images/eee.jpeg" },
+  // ];
+
+  resultsGrid.innerHTML = dummyData
+    .map(
+      (item, index) => `
+      <div class="product_card">
+        <img src="${item.imageUrl}" alt="${item.title}">
+        <h4>${item.title}</h4>
+        <p>$${item.price}</p>
+
+        <button class="add_cart_btn" onclick="addToCart(${index})">
+          Add to Cart
+        </button>
+
+      </div>
+    `
+    )
+    .join("");
+
+}
+
+// Initial state
+hideFileName();
+clearPreview();
+resultsSection.style.display = "none";
+
+function increaseQty(index){
+
+  let item = cartItems.find(i => i.index === index);
+
+  item.count++;
+
+  c_counter++;
+
+  totalPrice += dummyData[index].price;
+
+  update_cart_items();
+}
+
+function decreaseQty(index){
+
+  let item = cartItems.find(i => i.index === index);
+
+  if(item.count > 1){
+
+    item.count--;
+    c_counter--;
+    totalPrice -= dummyData[index].price;
+
+  }else{
+    removeItem(index);
+    return;
+  }
+
+  update_cart_items();
+}
+
+function removeItem(index){
+
+  let item = cartItems.find(i => i.index === index);
+
+  totalPrice -= item.count * dummyData[index].price;
+
+  c_counter -= item.count;
+
+  cartItems = cartItems.filter(i => i.index !== index);
+
+  update_cart_items();
+}
