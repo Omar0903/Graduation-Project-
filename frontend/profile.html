@@ -104,22 +104,44 @@
     </div>
   </div>
 
-  <script>
-    const isLoggedIn = localStorage.getItem("isLoggedIn") || sessionStorage.getItem("isLoggedIn");
-    const currentUser = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
+  <script type="module">
+    import { auth, db } from "./js/firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    if (isLoggedIn !== "true" || !currentUser) {
-      window.location.href = "login.html";
-    } else {
-      document.getElementById("profileFname").textContent = localStorage.getItem("fname") || "";
-      document.getElementById("profileLname").textContent = localStorage.getItem("lname") || "";
-      document.getElementById("profileUsername").textContent = localStorage.getItem("username") || "";
-      document.getElementById("profileEmail").textContent = localStorage.getItem("email") || "";
-      document.getElementById("profilePhone").textContent = localStorage.getItem("phone") || "";
-      document.getElementById("profileAddress").textContent = localStorage.getItem("address") || "";
-      document.getElementById("profilePayment").textContent = localStorage.getItem("payment") || "";
-      document.getElementById("profileStatus").textContent = "Logged In";
-    }
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          alert("User data not found");
+          return;
+        }
+
+        const data = userSnap.data();
+
+        document.getElementById("profileFname").textContent = data.fname || "";
+        document.getElementById("profileLname").textContent = data.lname || "";
+        document.getElementById("profileUsername").textContent = data.username || "";
+        document.getElementById("profileEmail").textContent = data.email || "";
+        document.getElementById("profilePhone").textContent = data.phone || "";
+        document.getElementById("profileAddress").textContent = data.address || "";
+        document.getElementById("profilePayment").textContent = data.payment || "";
+        document.getElementById("profileStatus").textContent = "Logged In";
+
+        localStorage.setItem("currentUser", data.username || "");
+        localStorage.setItem("currentUserEmail", data.email || "");
+      } catch (error) {
+        console.error(error);
+        alert("Failed to load profile");
+      }
+    });
   </script>
 </body>
 </html>

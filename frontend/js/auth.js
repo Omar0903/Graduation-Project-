@@ -1,10 +1,12 @@
 function clearAuthData() {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentUserEmail");
     localStorage.removeItem("expiryTime");
 
     sessionStorage.removeItem("isLoggedIn");
     sessionStorage.removeItem("currentUser");
+    sessionStorage.removeItem("currentUserEmail");
     sessionStorage.removeItem("expiryTime");
 }
 
@@ -14,11 +16,7 @@ function getAuthData() {
     let expiryTime = localStorage.getItem("expiryTime");
 
     if (isLoggedIn === "true" && currentUser && expiryTime) {
-        return {
-            isLoggedIn,
-            currentUser,
-            expiryTime
-        };
+        return { isLoggedIn, currentUser, expiryTime };
     }
 
     isLoggedIn = sessionStorage.getItem("isLoggedIn");
@@ -26,11 +24,7 @@ function getAuthData() {
     expiryTime = sessionStorage.getItem("expiryTime");
 
     if (isLoggedIn === "true" && currentUser && expiryTime) {
-        return {
-            isLoggedIn,
-            currentUser,
-            expiryTime
-        };
+        return { isLoggedIn, currentUser, expiryTime };
     }
 
     return null;
@@ -39,13 +33,13 @@ function getAuthData() {
 const authData = getAuthData();
 
 if (!authData) {
-    window.location.replace = "login.html";
+    window.location.replace("login.html");
 } else {
     const now = Date.now();
     const expiry = parseInt(authData.expiryTime, 10);
 
     if (now > expiry) {
         clearAuthData();
-        window.location.replace = "login.html";
+        window.location.replace("login.html");
     }
 }

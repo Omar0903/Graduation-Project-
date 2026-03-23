@@ -56,15 +56,11 @@ async function sendImageToAPI(file) {
     const data = await response.json();
     console.log("API RESULT:", data);
 
-    // حفظ النتائج والكلاس
     localStorage.setItem(SAVED_RESULTS_KEY, JSON.stringify(data.similar_images || []));
     localStorage.setItem(SAVED_CLASS_KEY, data.predicted_class || "");
 
     showResults(data);
-
-    // إظهار قسم النتائج بعد ما الداتا ترجع بنجاح
     resultsSection.style.display = "block";
-
   } catch (error) {
     console.error(error);
     alert("Server error - تأكد إن الباك إند شغال");
@@ -260,11 +256,9 @@ function showPreview(file) {
     previewImg.src = e.target.result;
     previewWrap.classList.add("show");
 
-    // حفظ الصورة نفسها
     localStorage.setItem(SAVED_IMAGE_KEY, e.target.result);
     localStorage.setItem(SAVED_FILE_NAME_KEY, file.name);
 
-    // بمجرد عرض الصورة في البريفيو، بيبعتها للباك إند
     sendImageToAPI(file);
   };
 
@@ -355,7 +349,9 @@ exit_cart_section_mark.onclick = function () {
 hideFileName();
 clearPreview();
 resultsSection.style.display = "none";
-
-// استرجاع الصورة والنتائج المحفوظة
 restoreSavedPreview();
 restoreSavedResults();
+window.addToCart = addToCart;
+window.increaseQty = increaseQty;
+window.decreaseQty = decreaseQty;
+window.removeItem = removeItem;

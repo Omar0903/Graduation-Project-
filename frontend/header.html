@@ -11,7 +11,6 @@
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="topbar">
     <div class="topbar_inner">
 
@@ -59,11 +58,9 @@
     </div>
   </header>
 
-  <!-- PAGE BACKGROUND WRAPPER -->
   <main class="page">
     <div class="hero">
 
-      <!-- LEFT -->
       <section class="hero_left">
         <h1>Find Furniture by Image</h1>
         <p class="sub">Upload a photo and discover similar furniture instantly.</p>
@@ -78,11 +75,9 @@
 
             <p class="filename" id="fileName" style="display:none;"></p>
           </div>
-
         </div>
       </section>
 
-      <!-- RIGHT (Preview hidden until upload) -->
       <aside class="preview_wrap" id="previewWrap">
         <div class="preview_card">
           <img id="previewImg" alt="Preview" />
@@ -92,7 +87,6 @@
     </div>
   </main>
 
-<!--==========================results=============================-->
 <section class="results_section" id="resultsSection" style="display:none;">
   <div class="container">
     <h2>Similar Items Found</h2>
@@ -100,85 +94,112 @@
   </div>
 </section>
 
-<!-- //////////////////////////////////////////////// cart_div /////////////////////////////////// -->
 <aside class="cart_div" id="cart_div">
-    
-    <!-- <div class="cart_cashback">cash back 20% on first order</div> -->
-    
     <div class="cart_container">
         <div class="first_part">
-            
             <p id="cart_counter">your cart (0)</p>
             <i class="fa-solid fa-xmark exit_mark" id="exit_mark"></i>
-            
         </div>
-        
-        <div class="cart_content">
-            
-            <h2 class="cart_title">your cart is empty</h2>
 
+        <div class="cart_content">
+            <h2 class="cart_title">your cart is empty</h2>
         </div>
 
         <div class="total_section">
             <div class="total_cast_section">
-                
                 <span class="total_cost_lable">total cost:</span>
-                
+
                 <div class="total_cast_price">
-                    <!-- <p class="original-total">$0</p> -->
                     <p class="final-total">$0</p>
-
                 </div>
-
             </div>
-            
+
             <button class="checkout-btn"> checkout</button>
         </div>
-    
     </div>
+</aside>
 
-</aside>  
+<script type="module" src="js/upload.js"></script>
 
-<script src="js/upload.js"></script>
+<script type="module">
+import { auth, db } from "./js/firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-<script>
 const authBtn = document.getElementById("authBtn");
 const authText = document.getElementById("authText");
 const settingsBtn = document.getElementById("settingsBtn");
 const dropdownMenu = document.getElementById("dropdownMenu");
 const userInfo = document.getElementById("userInfo");
 
-function getCurrentUser() {
-  return localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
-}
-
 function isLoggedIn() {
   return localStorage.getItem("isLoggedIn") === "true" ||
          sessionStorage.getItem("isLoggedIn") === "true";
 }
 
-function checkUser() {
-  const user = getCurrentUser();
-
-  if (isLoggedIn() && user) {
-    authText.textContent = "Logout";
-    settingsBtn.style.display = "inline-flex";
-    userInfo.textContent = "Hello, " + user;
-  } else {
-    authText.textContent = "Login";
-    settingsBtn.style.display = "none";
-    dropdownMenu.classList.remove("show");
-  }
+function setLoggedOutUI() {
+  authText.textContent = "Login";
+  settingsBtn.style.display = "none";
+  dropdownMenu.classList.remove("show");
+  userInfo.textContent = "Hello, User";
 }
 
-authBtn.addEventListener("click", () => {
+function setLoggedInUI(username) {
+  authText.textContent = "Logout";
+  settingsBtn.style.display = "inline-flex";
+  userInfo.textContent = "Hello, " + username;
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user || !isLoggedIn()) {
+    setLoggedOutUI();
+    return;
+  }
+
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const data = userSnap.data();
+      const currentUsername = data.username || "User";
+
+      if (localStorage.getItem("isLoggedIn") === "true") {
+        localStorage.setItem("currentUser", currentUsername);
+      }
+
+      if (sessionStorage.getItem("isLoggedIn") === "true") {
+        sessionStorage.setItem("currentUser", currentUsername);
+      }
+
+      setLoggedInUI(currentUsername);
+    } else {
+      setLoggedOutUI();
+    }
+  } catch (error) {
+    console.error(error);
+    setLoggedOutUI();
+  }
+});
+
+authBtn.addEventListener("click", async () => {
   if (isLoggedIn()) {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error(error);
+    }
+
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentUserEmail");
     localStorage.removeItem("expiryTime");
+    localStorage.removeItem("rememberMe");
+    localStorage.removeItem("rememberedUsername");
 
     sessionStorage.removeItem("isLoggedIn");
     sessionStorage.removeItem("currentUser");
+    sessionStorage.removeItem("currentUserEmail");
     sessionStorage.removeItem("expiryTime");
 
     window.location.href = "login.html";
@@ -195,8 +216,6 @@ settingsBtn.addEventListener("click", (e) => {
 window.addEventListener("click", () => {
   dropdownMenu.classList.remove("show");
 });
-
-checkUser();
 </script>
 
 </body>
