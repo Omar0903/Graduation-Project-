@@ -322,7 +322,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     top: 0;
     right: 0;
     z-index: 101;
-    overflow: hidden;
+    /* overflow: hidden; */
     display: none;
 
 }
@@ -565,7 +565,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
   border-radius:10px;
   width:180px;
   box-shadow:0 5px 20px rgba(0,0,0,.2);
-  overflow:hidden;
+  /* overflow:hidden; */
   z-index:1000;
 }
 
@@ -590,4 +590,118 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
 
 .dropdown-menu a:hover{
   background:#f2f2f2;
+}
+/* ===================== Responsive Fix For Header ===================== */
+
+@media (max-width: 1200px) {
+  .topbar_inner {
+    width: 100%;
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+  }
+
+  .nav {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .search {
+    width: 280px;
+    min-width: 180px;
+  }
+
+  .search input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .topbar_inner {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .brand {
+    order: 1;
+  }
+
+  .actions {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .search {
+    width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar_inner {
+    padding: 0 10px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+
+  .search {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .btn.cart,
+  .dropdown,
+  #authBtn {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand_text {
+    font-size: 16px;
+  }
+
+  .search {
+    max-width: 150px;
+  }
+
+  .search input {
+    font-size: 12px;
+  }
+
+  .btn {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
 }

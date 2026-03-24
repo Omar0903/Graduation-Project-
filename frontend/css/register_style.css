@@ -77,3 +77,48 @@ body{
     color:#2c7be5;
     text-decoration:none;
 }
+/* ===================== Responsive Only ===================== */
+
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .register-container {
+    width: 92%;
+    max-width: 400px;
+    padding: 28px 20px;
+  }
+
+  .name-fields {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .name-fields .input-group {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    width: 94%;
+    padding: 24px 16px;
+  }
+
+  .register-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .input-group input,
+  .input-group select {
+    font-size: 14px;
+  }
+
+  .register-btn {
+    padding: 11px;
+  }
+}

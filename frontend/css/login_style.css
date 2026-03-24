@@ -118,3 +118,94 @@ button:hover {
     margin: 0;
     cursor: pointer;
 }
+/* ===================== Responsive Only ===================== */
+
+@media (max-width: 992px) {
+  .login-box {
+    width: 85%;
+    max-width: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .left-side {
+    width: 100%;
+    min-height: 220px;
+    flex: none;
+  }
+
+  .left-side img {
+    height: 220px;
+  }
+
+  .right-side {
+    width: 100%;
+    flex: none;
+    padding: 30px 20px;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .login-box h2 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .left-side {
+    min-height: 180px;
+  }
+
+  .left-side img {
+    height: 180px;
+  }
+
+  .right-side {
+    padding: 24px 16px;
+  }
+
+  .login-box {
+    max-width: 100%;
+  }
+
+  .login-box h2 {
+    font-size: 22px;
+  }
+
+  .login-box p {
+    font-size: 14px;
+  }
+
+  .input-group input {
+    font-size: 13px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 11px;
+  }
+
+  .extra-links {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .remember-box {
+    flex-wrap: wrap;
+  }
+}
