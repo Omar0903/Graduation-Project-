@@ -705,3 +705,43 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     font-size: 13px;
   }
 }
+/* الوضع العادي */
+body {
+  background-color: #ffffff;
+  color: #222;
+  transition: 0.3s;
+}
+
+/* الوضع الداكن */
+body.dark-mode {
+  background-color: #121212;
+  color: #eee;
+}
+
+/* cards */
+body.dark-mode .upload_card,
+body.dark-mode .preview_card,
+body.dark-mode .results_section,
+body.dark-mode .cart_container {
+  background-color: #1e1e1e !important;
+  color: #eee;
+}
+
+/* inputs */
+body.dark-mode input,
+body.dark-mode select {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-color: #444;
+}
+
+/* header */
+body.dark-mode .topbar {
+  background-color: #1a1a1a;
+}
+
+/* buttons */
+body.dark-mode .btn {
+  background-color: #2c2c2c;
+  color: #fff;
+}
