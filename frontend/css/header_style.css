@@ -7,6 +7,8 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
   width:100%;
   background: linear-gradient(180deg, #3f5668 0%, #304656 100%);
   padding:14px 0;
+  position: relative;
+  z-index: 9999;
 }
 
 .topbar_inner{
@@ -712,36 +714,129 @@ body {
   transition: 0.3s;
 }
 
-/* الوضع الداكن */
+/* الوضع الداكن (Ultra Premium / Pro Max Theme) */
 body.dark-mode {
-  background-color: #121212;
-  color: #eee;
+  background-color: #050505;
+  color: #ededed;
+  background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #050505 60%);
+  background-attachment: fixed;
 }
 
-/* cards */
+/* Glassmorphism for cards and sections */
 body.dark-mode .upload_card,
 body.dark-mode .preview_card,
 body.dark-mode .results_section,
-body.dark-mode .cart_container {
-  background-color: #1e1e1e !important;
-  color: #eee;
+body.dark-mode .cart_container,
+body.dark-mode .product_card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #ededed;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* inputs */
 body.dark-mode input,
 body.dark-mode select {
-  background-color: #2a2a2a;
+  background-color: rgba(0, 0, 0, 0.2);
   color: #fff;
-  border-color: #444;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+  outline: none;
 }
 
 /* header */
 body.dark-mode .topbar {
-  background-color: #1a1a1a;
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* buttons */
-body.dark-mode .btn {
-  background-color: #2c2c2c;
+/* premium buttons */
+body.dark-mode .btn,
+body.dark-mode .add_cart_btn {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
   color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .btn:hover,
+body.dark-mode .add_cart_btn:hover {
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+/* Dropzone */
+body.dark-mode .dropzone {
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .dropzone:hover,
+body.dark-mode .dropzone.dragover {
+  border-color: #00f2fe;
+  background: rgba(0, 242, 254, 0.05);
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.1);
+}
+
+/* Cart Item */
+body.dark-mode .cart-item {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ededed;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .qty-control {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .qty-control button {
+  color: #ededed;
+}
+
+/* Headings and premium glow in dark mode */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4 {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Profile Dropdown Menu in dark mode */
+body.dark-mode .dropdown-menu {
+  background: rgba(15, 15, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .user-info {
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .dropdown-menu a {
+  color: #ededed !important;
+}
+
+body.dark-mode .dropdown-menu a:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
 }
