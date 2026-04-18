@@ -20,16 +20,16 @@
       </a>
 
       <nav class="nav">
-        <a href="#" class="nav_link active">Home</a>
-        <a href="#" class="nav_link">Categories</a>
-        <a href="#" class="nav_link">Best Sellers</a>
+        <a href="#" class="nav_link active" data-i18n="nav_home">Home</a>
+        <a href="#" class="nav_link" data-i18n="nav_categories">Categories</a>
+        <a href="#" class="nav_link" data-i18n="nav_best_sellers">Best Sellers</a>
       </nav>
 
       <div class="actions">
         
         <div class="search">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Search for furniture..." />
+          <input type="text" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
         </div>
         <button class="btn" id="themeToggle" title="Toggle Dark Mode">
           <i class="fa-solid fa-moon"></i>
@@ -38,7 +38,7 @@
         <div class="user-area">
           <button class="btn" id="authBtn" type="button">
             <i class="fa-regular fa-user"></i>
-            <span id="authText">Login</span>
+            <span id="authText" data-i18n="login_text">Login</span>
           </button>
 
           <div class="dropdown">
@@ -47,9 +47,9 @@
             </button>
 
             <div class="dropdown-menu" id="dropdownMenu">
-              <div class="user-info" id="userInfo">Hello, User</div>
-              <a href="profile.html">Profile</a>
-              <a href="edit-profile.html">Edit Info</a>
+              <div class="user-info" id="userInfo" data-i18n="hello_user">Hello, User</div>
+              <a href="profile.html" data-i18n="profile_menu">Profile</a>
+              <a href="edit-profile.html" data-i18n="edit_info">Edit Info</a>
             </div>
           </div>
         </div>
@@ -57,6 +57,11 @@
         <button class="btn cart" type="button" aria-label="Cart">
           <i class="fa-solid fa-bag-shopping"></i>
           <span class="badge" id="cartBadge" hidden>0</span>
+        </button>
+
+        <button class="btn" id="langToggle" style="font-weight:600; font-size:14px; padding: 0 15px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langText">عربي</span>
         </button>
       </div>
     </div>
@@ -66,16 +71,16 @@
     <div class="hero">
 
       <section class="hero_left">
-        <h1>Find Furniture by Image</h1>
-        <p class="sub">Upload a photo and discover similar furniture instantly.</p>
+        <h1 data-i18n="hero_title">Find Furniture by Image</h1>
+        <p class="sub" data-i18n="hero_sub">Upload a photo and discover similar furniture instantly.</p>
 
         <div class="upload_card">
           <div class="dropzone" id="dropzone">
             <div class="icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-            <h3>Drag &amp; Drop Image Here or</h3>
+            <h3 data-i18n="drag_drop">Drag &amp; Drop Image Here or</h3>
 
             <input type="file" id="fileInput" accept="image/*" hidden />
-            <button class="upload_btn" id="uploadBtn" type="button">Upload Photo</button>
+            <button class="upload_btn" id="uploadBtn" type="button" data-i18n="upload_btn">Upload Photo</button>
 
             <p class="filename" id="fileName" style="display:none;"></p>
           </div>
@@ -93,7 +98,7 @@
 
 <section class="results_section" id="resultsSection" style="display:none;">
   <div class="container">
-    <h2>Similar Items Found</h2>
+    <h2 data-i18n="similar_items">Similar Items Found</h2>
     <div class="results_grid" id="resultsGrid"></div>
   </div>
 </section>
@@ -101,24 +106,24 @@
 <aside class="cart_div" id="cart_div">
     <div class="cart_container">
         <div class="first_part">
-            <p id="cart_counter">your cart (0)</p>
+            <p id="cart_counter" data-i18n="your_cart">your cart (0)</p>
             <i class="fa-solid fa-xmark exit_mark" id="exit_mark"></i>
         </div>
 
         <div class="cart_content">
-            <h2 class="cart_title">your cart is empty</h2>
+            <h2 class="cart_title" data-i18n="cart_empty">your cart is empty</h2>
         </div>
 
         <div class="total_section">
             <div class="total_cast_section">
-                <span class="total_cost_lable">total cost:</span>
+                <span class="total_cost_lable" data-i18n="total_cost">total cost:</span>
 
                 <div class="total_cast_price">
                     <p class="final-total">$0</p>
                 </div>
             </div>
 
-            <button class="checkout-btn"> checkout</button>
+            <button class="checkout-btn" data-i18n="checkout"> checkout</button>
         </div>
     </div>
 </aside>
@@ -142,16 +147,22 @@ function isLoggedIn() {
 }
 
 function setLoggedOutUI() {
-  authText.textContent = "Login";
+  const isAr = document.documentElement.lang === 'ar';
+  authText.textContent = isAr ? "تسجيل الدخول" : "Login";
+  authText.setAttribute('data-i18n', 'login_text');
   settingsBtn.style.display = "none";
   dropdownMenu.classList.remove("show");
-  userInfo.textContent = "Hello, User";
+  userInfo.textContent = isAr ? "مرحباً، مستخدم" : "Hello, User";
+  userInfo.setAttribute('data-i18n', 'hello_user');
 }
 
 function setLoggedInUI(username) {
-  authText.textContent = "Logout";
+  const isAr = document.documentElement.lang === 'ar';
+  authText.textContent = isAr ? "تسجيل الخروج" : "Logout";
+  authText.setAttribute('data-i18n', 'logout_text');
   settingsBtn.style.display = "inline-flex";
-  userInfo.textContent = "Hello, " + username;
+  userInfo.textContent = (isAr ? "مرحباً، " : "Hello, ") + username;
+  userInfo.removeAttribute('data-i18n');
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -220,6 +231,81 @@ settingsBtn.addEventListener("click", (e) => {
 window.addEventListener("click", () => {
   dropdownMenu.classList.remove("show");
 });
+</script>
+<script>
+    const headerTranslations = {
+        en: {
+            nav_home: "Home",
+            nav_categories: "Categories",
+            nav_best_sellers: "Best Sellers",
+            search_ph: "Search for furniture...",
+            login_text: "Login",
+            logout_text: "Logout",
+            profile_menu: "Profile",
+            edit_info: "Edit Info",
+            hero_title: "Find Furniture by Image",
+            hero_sub: "Upload a photo and discover similar furniture instantly.",
+            drag_drop: "Drag & Drop Image Here or",
+            upload_btn: "Upload Photo",
+            similar_items: "Similar Items Found",
+            your_cart: "your cart (0)",
+            cart_empty: "your cart is empty",
+            total_cost: "total cost:",
+            checkout: "checkout",
+            hello_user: "Hello, User"
+        },
+        ar: {
+            nav_home: "الرئيسية",
+            nav_categories: "الفئات",
+            nav_best_sellers: "الأكثر مبيعاً",
+            search_ph: "ابحث عن الأثاث...",
+            login_text: "تسجيل الدخول",
+            logout_text: "تسجيل الخروج",
+            profile_menu: "الملف الشخصي",
+            edit_info: "تعديل المعلومات",
+            hero_title: "ابحث عن الأثاث بالصورة",
+            hero_sub: "قم برفع صورة واكتشف أثاثاً مشابهاً على الفور.",
+            drag_drop: "اسحب وأفلت الصورة هنا أو",
+            upload_btn: "رفع صورة",
+            similar_items: "عناصر مشابهة",
+            your_cart: "عربة التسوق (0)",
+            cart_empty: "عربة التسوق فارغة",
+            total_cost: "التكلفة الإجمالية:",
+            checkout: "الدفع",
+            hello_user: "مرحباً، مستخدم"
+        }
+    };
+
+    let headerCurrentLang = 'en';
+    const headerLangToggleBtn = document.getElementById('langToggle');
+
+    headerLangToggleBtn.addEventListener('click', () => {
+        headerCurrentLang = headerCurrentLang === 'en' ? 'ar' : 'en';
+        document.documentElement.lang = headerCurrentLang;
+        document.documentElement.dir = headerCurrentLang === 'ar' ? 'rtl' : 'ltr';
+        
+        document.getElementById('langText').textContent = headerCurrentLang === 'en' ? 'عربي' : 'English';
+
+        document.querySelectorAll('[data-i18n]').forEach(elem => {
+            const key = elem.getAttribute('data-i18n');
+            if (headerTranslations[headerCurrentLang][key]) {
+                elem.textContent = headerTranslations[headerCurrentLang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-ph]').forEach(elem => {
+            const key = elem.getAttribute('data-i18n-ph');
+            if (headerTranslations[headerCurrentLang][key]) {
+                elem.placeholder = headerTranslations[headerCurrentLang][key];
+            }
+        });
+
+        const userInfoElem = document.getElementById('userInfo');
+        if (userInfoElem && !userInfoElem.hasAttribute('data-i18n')) {
+             let name = userInfoElem.textContent.replace('Hello, ', '').replace('مرحباً، ', '');
+             userInfoElem.textContent = (headerCurrentLang === 'en' ? 'Hello, ' : 'مرحباً، ') + name;
+        }
+    });
 </script>
 <script src="js/theme.js"></script>
 </body>

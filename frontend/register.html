@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.css">
     <link rel="stylesheet" href="css/login_style.css">
 </head>
 
@@ -17,87 +19,94 @@
 
     <div class="right-side">
 
+        <div class="lang-switch">
+            <button id="langToggle">
+                <i class="fa-solid fa-globe"></i>
+                <span id="langText">عربي</span>
+            </button>
+        </div>
+
         <div class="login-box">
 
-            <h2>Create Account</h2>
-            <p>Please fill the information</p>
+            <h2 data-i18n="create_account">Create Account</h2>
+            <p data-i18n="fill_info">Please fill the information</p>
 
             <form>
 
                 <div id="step1">
 
-                    <div class="name-row">
-                        <div class="input-group">
-                            <label>First Name</label>
-                            <input type="text" placeholder="First Name" id="fName">
+                    <div class="name-row" style="display:flex; gap:10px;">
+                        <div class="input-group" style="flex:1;">
+                            <label data-i18n="first_name_lbl">First Name</label>
+                            <input type="text" placeholder="First Name" id="fName" data-i18n-ph="first_name_ph">
                         </div>
 
-                        <div class="input-group">
-                            <label>Last Name</label>
-                            <input type="text" placeholder="Last Name" id="lName">
+                        <div class="input-group" style="flex:1;">
+                            <label data-i18n="last_name_lbl">Last Name</label>
+                            <input type="text" placeholder="Last Name" id="lName" data-i18n-ph="last_name_ph">
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label>Username</label>
-                        <input type="text" placeholder="Username" id="userName">
+                        <label data-i18n="username_lbl">Username</label>
+                        <input type="text" placeholder="Username" id="userName" data-i18n-ph="username_ph">
                     </div>
 
                     <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" placeholder="Enter your email" id="email">
+                        <label data-i18n="email_lbl">Email</label>
+                        <input type="email" placeholder="Enter your email" id="email" data-i18n-ph="email_ph">
                     </div>
 
-                    <button type="button" id="sendCodeBtn">Send Verification Code</button>
+                    <button type="button" id="sendCodeBtn" data-i18n="send_code">Send Verification Code</button>
 
                 </div>
 
                 <div id="verifySection" style="display:none;">
                     <div class="input-group">
-                        <label>Verification Code</label>
-                        <input type="text" id="otp" placeholder="Enter code">
+                        <label data-i18n="verify_lbl">Verification Code</label>
+                        <input type="text" id="otp" placeholder="Enter code" data-i18n-ph="verify_ph">
                     </div>
 
-                    <button type="button" id="verifyBtn">Verify</button>
+                    <button type="button" id="verifyBtn" data-i18n="verify_btn">Verify</button>
                 </div>
 
                 <div id="passwordSection" style="display:none;">
                     <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" placeholder="Enter password" id="password">
+                        <label data-i18n="password_lbl">Password</label>
+                        <input type="password" placeholder="Enter password" id="password" data-i18n-ph="password_ph">
                     </div>
 
                     <div class="input-group">
-                        <label>Confirm Password</label>
-                        <input type="password" placeholder="Confirm password" id="confirmPassword">
+                        <label data-i18n="confirm_password_lbl">Confirm Password</label>
+                        <input type="password" placeholder="Confirm password" id="confirmPassword" data-i18n-ph="confirm_password_ph">
                     </div>
 
                     <div class="input-group">
-                        <label>Phone Number</label>
-                        <input type="text" placeholder="Phone number" id="phone">
+                        <label data-i18n="phone_lbl">Phone Number</label>
+                        <input type="text" placeholder="Phone number" id="phone" data-i18n-ph="phone_ph">
                     </div>
 
                     <div class="input-group">
-                        <label>Address</label>
-                        <input type="text" placeholder="Address" id="address">
+                        <label data-i18n="address_lbl">Address</label>
+                        <input type="text" placeholder="Address" id="address" data-i18n-ph="address_ph">
                     </div>
 
                     <div class="input-group">
-                        <label>Payment Method</label>
+                        <label data-i18n="payment_lbl">Payment Method</label>
 
                         <select class="payment" id="payment">
-                            <option>Cash</option>
-                            <option>Fawry</option>
-                            <option>Visa</option>
+                            <option data-i18n="cash">Cash</option>
+                            <option data-i18n="fawry">Fawry</option>
+                            <option data-i18n="visa">Visa</option>
                         </select>
                     </div>
 
-                    <button type="submit" id="register-btn">Register</button>
+                    <button type="submit" id="register-btn" data-i18n="register_btn">Register</button>
                 </div>
 
                 <div class="extra-links">
-                    <span>Have an account?</span>
-                    <a href="login.html">Login</a>
+                    <span data-i18n="have_account">Have an account?</span>
+                    <a href="login.html" data-i18n="login_link">Login</a>
                 </div>
 
             </form>
@@ -108,6 +117,97 @@
 
 </div>
 
+<script>
+    const translations = {
+        en: {
+            create_account: "Create Account",
+            fill_info: "Please fill the information",
+            first_name_lbl: "First Name",
+            first_name_ph: "First Name",
+            last_name_lbl: "Last Name",
+            last_name_ph: "Last Name",
+            username_lbl: "Username",
+            username_ph: "Username",
+            email_lbl: "Email",
+            email_ph: "Enter your email",
+            send_code: "Send Verification Code",
+            verify_lbl: "Verification Code",
+            verify_ph: "Enter code",
+            verify_btn: "Verify",
+            password_lbl: "Password",
+            password_ph: "Enter password",
+            confirm_password_lbl: "Confirm Password",
+            confirm_password_ph: "Confirm password",
+            phone_lbl: "Phone Number",
+            phone_ph: "Phone number",
+            address_lbl: "Address",
+            address_ph: "Address",
+            payment_lbl: "Payment Method",
+            cash: "Cash",
+            fawry: "Fawry",
+            visa: "Visa",
+            register_btn: "Register",
+            have_account: "Have an account?",
+            login_link: "Login"
+        },
+        ar: {
+            create_account: "إنشاء حساب",
+            fill_info: "يرجى إدخال البيانات",
+            first_name_lbl: "الاسم الأول",
+            first_name_ph: "الاسم الأول",
+            last_name_lbl: "الاسم الأخير",
+            last_name_ph: "الاسم الأخير",
+            username_lbl: "اسم المستخدم",
+            username_ph: "اسم المستخدم",
+            email_lbl: "البريد الإلكتروني",
+            email_ph: "أدخل بريدك الإلكتروني",
+            send_code: "إرسال رمز التحقق",
+            verify_lbl: "رمز التحقق",
+            verify_ph: "أدخل الرمز",
+            verify_btn: "تحقق",
+            password_lbl: "كلمة المرور",
+            password_ph: "أدخل كلمة المرور",
+            confirm_password_lbl: "تأكيد كلمة المرور",
+            confirm_password_ph: "تأكيد كلمة المرور",
+            phone_lbl: "رقم الهاتف",
+            phone_ph: "رقم الهاتف",
+            address_lbl: "العنوان",
+            address_ph: "العنوان",
+            payment_lbl: "طريقة الدفع",
+            cash: "نقدي",
+            fawry: "فوري",
+            visa: "فيزا",
+            register_btn: "إنشاء حساب",
+            have_account: "لديك حساب بالفعل؟",
+            login_link: "تسجيل الدخول"
+        }
+    };
+
+    let currentLang = 'en';
+    const langToggleBtn = document.getElementById('langToggle');
+
+    langToggleBtn.addEventListener('click', () => {
+        currentLang = currentLang === 'en' ? 'ar' : 'en';
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        
+        document.getElementById('langText').textContent = currentLang === 'en' ? 'عربي' : 'English';
+
+        document.querySelectorAll('[data-i18n]').forEach(elem => {
+            const key = elem.getAttribute('data-i18n');
+            if (translations[currentLang][key]) {
+                elem.textContent = translations[currentLang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-ph]').forEach(elem => {
+            const key = elem.getAttribute('data-i18n-ph');
+            if (translations[currentLang][key]) {
+                elem.placeholder = translations[currentLang][key];
+            }
+        });
+    });
+</script>
 <script type="module" src="js/register_script.js"></script>
 <script src="js/theme.js"></script>
 </body>
