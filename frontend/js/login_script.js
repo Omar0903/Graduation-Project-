@@ -63,7 +63,7 @@ loginBtn.addEventListener("click", async function (event) {
     event.preventDefault();
 
     if (username.value.trim() === "" || password.value.trim() === "") {
-        alert("Please fill in all fields.");
+        showToast("Please fill in all fields.", "error");
         return;
     }
 
@@ -103,6 +103,6 @@ loginBtn.addEventListener("click", async function (event) {
         window.location.href = "header.html";
     } catch (error) {
         console.error(error);
-        alert("Invalid username/email or password ❌");
+        showToast("Invalid username/email or password ❌", "error");
     }
 });

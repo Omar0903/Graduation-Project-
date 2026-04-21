@@ -75,14 +75,14 @@ sendCodeBtn.addEventListener("click", async () => {
         username.value.trim() === "" ||
         email.value.trim() === ""
     ) {
-        alert("Fill all fields first");
+        showToast("Fill all fields first", "error");
         return;
     }
 
     try {
         const taken = await isUsernameTaken(username.value);
         if (taken) {
-            alert("Username already exists");
+            showToast("Username already exists", "error");
             return;
         }
 
@@ -98,22 +98,22 @@ sendCodeBtn.addEventListener("click", async () => {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Failed to send code");
+            showToast(data.message || "Failed to send code", "error");
             return;
         }
 
-        alert(data.message || "Verification code sent successfully");
+        showToast(data.message || "Verification code sent successfully", "success");
         verifySection.style.display = "block";
         startResendTimer(data.expires_in || 60);
     } catch (err) {
         console.error(err);
-        alert("Error sending code");
+        showToast("Error sending code", "error");
     }
 });
 
 verifyBtn.addEventListener("click", async () => {
     if (otpInput.value.trim() === "") {
-        alert("Enter verification code");
+        showToast("Enter verification code", "error");
         return;
     }
 
@@ -131,7 +131,7 @@ verifyBtn.addEventListener("click", async () => {
 
         if (data.status === "success") {
             isOtpVerified = true;
-            alert("Verified ✅");
+            showToast("Verified ✅", "success");
 
             step1.style.display = "none";
             verifySection.style.display = "none";
@@ -141,13 +141,13 @@ verifyBtn.addEventListener("click", async () => {
                 clearInterval(resendTimer);
             }
         } else if (data.status === "expired") {
-            alert("Code expired. Please resend a new code.");
+            showToast("Code expired. Please resend a new code.", "error");
         } else {
-            alert(data.message || "Wrong code ❌");
+            showToast(data.message || "Wrong code ❌", "error");
         }
     } catch (err) {
         console.error(err);
-        alert("Error verifying");
+        showToast("Error verifying", "error");
     }
 });
 
@@ -155,7 +155,7 @@ registerBtn.addEventListener("click", async function (event) {
     event.preventDefault();
 
     if (!isOtpVerified) {
-        alert("Please verify your email first");
+        showToast("Please verify your email first", "error");
         return;
     }
 
@@ -165,19 +165,19 @@ registerBtn.addEventListener("click", async function (event) {
         phone.value.trim() === "" ||
         address.value.trim() === ""
     ) {
-        alert("Please fill in all fields");
+        showToast("Please fill in all fields", "error");
         return;
     }
 
     if (password.value !== confirmPassword.value) {
-        alert("Passwords do not match");
+        showToast("Passwords do not match", "error");
         return;
     }
 
     try {
         const taken = await isUsernameTaken(username.value);
         if (taken) {
-            alert("Username already exists");
+            showToast("Username already exists", "error");
             return;
         }
 
@@ -200,19 +200,19 @@ registerBtn.addEventListener("click", async function (event) {
             createdAt: new Date().toISOString()
         });
 
-        alert("Account Created ✅");
+        showToast("Account Created ✅", "success");
         window.location.href = "login.html";
     } catch (error) {
         console.error(error);
 
         if (error.code === "auth/email-already-in-use") {
-            alert("This email is already registered");
+            showToast("This email is already registered", "error");
         } else if (error.code === "auth/invalid-email") {
-            alert("Invalid email");
+            showToast("Invalid email", "error");
         } else if (error.code === "auth/weak-password") {
-            alert("Password should be at least 6 characters");
+            showToast("Password should be at least 6 characters", "error");
         } else {
-            alert(error.message || "Registration failed");
+            showToast(error.message || "Registration failed", "error");
         }
     }
 });

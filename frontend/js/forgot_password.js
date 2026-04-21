@@ -10,17 +10,17 @@ resetBtn.addEventListener("click", async function (e) {
     const email = emailInput.value.trim();
 
     if (email === "") {
-        alert("Please enter your email");
+        showToast("Please enter your email", "error");
         return;
     }
 
     try {
         await sendPasswordResetEmail(auth, email);
-        alert("Reset link sent to your email");
+        showToast("Reset link sent to your email", "success");
         console.log("RESET EMAIL SENT SUCCESSFULLY");
     } catch (error) {
         console.error("RESET PASSWORD ERROR CODE:", error.code);
         console.error("RESET PASSWORD ERROR MESSAGE:", error.message);
-        alert(error.code + " | " + error.message);
+        showToast(error.code + " | " + error.message, "error");
     }
 });

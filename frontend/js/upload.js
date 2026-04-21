@@ -111,7 +111,7 @@ async function sendImageToAPI(file) {
     resultsSection.style.display = "block";
   } catch (error) {
     console.error(error);
-    alert("Server error - تأكد إن الباك إند شغال");
+    showToast("Server error - تأكد إن الباك إند شغال");
   }
 }
 
@@ -135,11 +135,11 @@ async function sendTextSearch(query) {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
     } else {
         const lang = localStorage.getItem('appLang') || 'en';
-        alert(lang === 'ar' ? "لم يتم العثور على نتائج" : "No results found");
+        showToast(lang === 'ar' ? "لم يتم العثور على نتائج" : "No results found");
     }
   } catch (error) {
     console.error(error);
-    alert("Server error - تأكد إن الباك إند شغال");
+    showToast("Server error - تأكد إن الباك إند شغال");
   }
 }
 
