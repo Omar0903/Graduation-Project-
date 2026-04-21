@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="js/auth.js"></script>
+  <title>Manzili - Best Sellers</title>
+
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/header_style.css?v=2">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar_inner">
+      <a class="brand" href="header.html">
+        <span class="brand_icon"><i class="fa-solid fa-chair"></i></span>
+        <span class="brand_text">Manzili</span>
+      </a>
+
+      <nav class="nav">
+        <a href="header.html" class="nav_link" data-i18n="nav_home">Home</a>
+        <div class="nav_dropdown">
+          <a href="#" class="nav_link" id="categoriesDropdownBtn" data-i18n="nav_categories" style="display:flex; align-items:center; gap:5px;">Categories <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></a>
+          <div class="nav_dropdown_menu" id="categoriesMenu">
+            <!-- Categories loaded via JS -->
+          </div>
+        </div>
+        <a href="best_sellers.html" class="nav_link active" data-i18n="nav_best_sellers">Best Sellers</a>
+      </nav>
+
+      <div class="actions">
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" id="searchBtn" style="cursor: pointer;"></i>
+          <input type="text" id="searchInput" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
+        </div>
+        <button class="btn" id="themeToggle" title="Toggle Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <div class="user-area">
+          <button class="btn" id="authBtn" type="button">
+            <i class="fa-regular fa-user"></i>
+            <span id="authText" data-i18n="login_text">Login</span>
+          </button>
+
+          <div class="dropdown">
+            <button class="btn" id="settingsBtn" type="button">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-info" id="userInfo" data-i18n="hello_user">Hello, User</div>
+              <a href="profile.html" data-i18n="profile_menu">Profile</a>
+              <a href="edit-profile.html" data-i18n="edit_info">Edit Info</a>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn cart" type="button" aria-label="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge" id="cartBadge" hidden>0</span>
+        </button>
+
+        <button class="btn" id="langToggle" style="font-weight:600; font-size:14px; padding: 0 15px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langText">عربي</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Full Page Background Wrap -->
+  <main class="page" style="min-height: calc(100vh - 70px); padding-top: 50px;">
+    
+    <div class="hero" style="display:none;"></div>
+    
+    <!-- Centered Title -->
+    <div style="width: min(1300px, 95%); margin: auto; text-align: center; margin-bottom: 40px;">
+        <h1 id="heroCategoryTitle" style="color: #fff; font-size: 42px; font-weight: 700; letter-spacing: 0.5px;">Best Sellers</h1>
+        <p style="color: rgba(255,255,255,0.85); margin-top: 10px; font-size: 16px;" data-i18n="best_sellers_desc">Top selling furniture picked for you</p>
+    </div>
+
+    <!-- Results Section -->
+    <section class="results_section" id="resultsSection" style="display:block; background: transparent; padding: 0;">
+      <div class="container category_container" style="width: min(1300px, 95%); margin: auto; display: flex; gap: 30px; align-items: flex-start;">
+        
+        <!-- Main Results Content (Full Width) -->
+        <div class="category_main_content" style="flex: 1;">
+          <h2 id="categoryTitle" style="display: none;"></h2>
+          
+          <div class="results_grid" id="resultsGrid"></div>
+          
+          <!-- Pagination Container -->
+          <div class="pagination" id="paginationContainer" style="display:none;"></div>
+        </div>
+        
+      </div>
+    </section>
+
+  </main>
+
+  <aside class="cart_div" id="cart_div">
+      <div class="cart_container">
+          <div class="first_part">
+              <p id="cart_counter" data-i18n="your_cart">your cart (0)</p>
+              <i class="fa-solid fa-xmark exit_mark" id="exit_mark"></i>
+          </div>
+          <div class="cart_content">
+              <h2 class="cart_title" data-i18n="cart_empty">your cart is empty</h2>
+          </div>
+          <div class="total_section">
+              <div class="total_cast_section">
+                  <span class="total_cost_lable" data-i18n="total_cost">total cost:</span>
+                  <div class="total_cast_price">
+                      <p class="final-total">$0</p>
+                  </div>
+              </div>
+              <button class="checkout-btn" data-i18n="checkout"> checkout</button>
+          </div>
+      </div>
+  </aside>
+
+<!-- Use upload.js for all logic -->
+<script type="module" src="js/upload.js"></script>
+
+<script type="module">
+import { auth, db } from "./js/firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const categoriesMenu = document.getElementById("categoriesMenu");
+
+const settingsBtn = document.getElementById("settingsBtn");
+const dropdownMenu = document.getElementById("dropdownMenu");
+if(settingsBtn) {
+    settingsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle("show");
+    });
+    window.addEventListener("click", () => {
+      dropdownMenu.classList.remove("show");
+    });
+}
+</script>
+<script src="js/localization.js"></script>
+<script src="js/theme.js"></script>
+</body>
+</html>

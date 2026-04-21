@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="js/auth.js"></script>
-  <title>FurniFind - Upload by Image</title>
+  <title>Manzili - Upload by Image</title>
 
   <link rel="stylesheet" href="css/all.css">
   <link rel="stylesheet" href="css/header_style.css?v=2">
@@ -16,20 +16,25 @@
 
       <a class="brand" href="#">
         <span class="brand_icon"><i class="fa-solid fa-chair"></i></span>
-        <span class="brand_text">FurniFind</span>
+        <span class="brand_text">Manzili</span>
       </a>
 
       <nav class="nav">
         <a href="#" class="nav_link active" data-i18n="nav_home">Home</a>
-        <a href="#" class="nav_link" data-i18n="nav_categories">Categories</a>
-        <a href="#" class="nav_link" data-i18n="nav_best_sellers">Best Sellers</a>
+        <div class="nav_dropdown">
+          <a href="#" class="nav_link" id="categoriesDropdownBtn" data-i18n="nav_categories" style="display:flex; align-items:center; gap:5px;">Categories <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></a>
+          <div class="nav_dropdown_menu" id="categoriesMenu">
+            <!-- Categories loaded via JS -->
+          </div>
+        </div>
+        <a href="best_sellers.html" class="nav_link" data-i18n="nav_best_sellers">Best Sellers</a>
       </nav>
 
       <div class="actions">
         
         <div class="search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
+          <i class="fa-solid fa-magnifying-glass" id="searchBtn" style="cursor: pointer;"></i>
+          <input type="text" id="searchInput" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
         </div>
         <button class="btn" id="themeToggle" title="Toggle Dark Mode">
           <i class="fa-solid fa-moon"></i>
@@ -231,82 +236,21 @@ settingsBtn.addEventListener("click", (e) => {
 window.addEventListener("click", () => {
   dropdownMenu.classList.remove("show");
 });
-</script>
-<script>
-    const headerTranslations = {
-        en: {
-            nav_home: "Home",
-            nav_categories: "Categories",
-            nav_best_sellers: "Best Sellers",
-            search_ph: "Search for furniture...",
-            login_text: "Login",
-            logout_text: "Logout",
-            profile_menu: "Profile",
-            edit_info: "Edit Info",
-            hero_title: "Find Furniture by Image",
-            hero_sub: "Upload a photo and discover similar furniture instantly.",
-            drag_drop: "Drag & Drop Image Here or",
-            upload_btn: "Upload Photo",
-            similar_items: "Similar Items Found",
-            your_cart: "your cart (0)",
-            cart_empty: "your cart is empty",
-            total_cost: "total cost:",
-            checkout: "checkout",
-            hello_user: "Hello, User"
-        },
-        ar: {
-            nav_home: "الرئيسية",
-            nav_categories: "الفئات",
-            nav_best_sellers: "الأكثر مبيعاً",
-            search_ph: "ابحث عن الأثاث...",
-            login_text: "تسجيل الدخول",
-            logout_text: "تسجيل الخروج",
-            profile_menu: "الملف الشخصي",
-            edit_info: "تعديل المعلومات",
-            hero_title: "ابحث عن الأثاث بالصورة",
-            hero_sub: "قم برفع صورة واكتشف أثاثاً مشابهاً على الفور.",
-            drag_drop: "اسحب وأفلت الصورة هنا أو",
-            upload_btn: "رفع صورة",
-            similar_items: "عناصر مشابهة",
-            your_cart: "عربة التسوق (0)",
-            cart_empty: "عربة التسوق فارغة",
-            total_cost: "التكلفة الإجمالية:",
-            checkout: "الدفع",
-            hello_user: "مرحباً، مستخدم"
-        }
-    };
 
-    let headerCurrentLang = 'en';
-    const headerLangToggleBtn = document.getElementById('langToggle');
+// Categories Dropdown Logic
+const categoriesBtn = document.getElementById("categoriesDropdownBtn");
+const categoriesMenu = document.getElementById("categoriesMenu");
 
-    headerLangToggleBtn.addEventListener('click', () => {
-        headerCurrentLang = headerCurrentLang === 'en' ? 'ar' : 'en';
-        document.documentElement.lang = headerCurrentLang;
-        document.documentElement.dir = headerCurrentLang === 'ar' ? 'rtl' : 'ltr';
-        
-        document.getElementById('langText').textContent = headerCurrentLang === 'en' ? 'عربي' : 'English';
-
-        document.querySelectorAll('[data-i18n]').forEach(elem => {
-            const key = elem.getAttribute('data-i18n');
-            if (headerTranslations[headerCurrentLang][key]) {
-                elem.textContent = headerTranslations[headerCurrentLang][key];
-            }
-        });
-
-        document.querySelectorAll('[data-i18n-ph]').forEach(elem => {
-            const key = elem.getAttribute('data-i18n-ph');
-            if (headerTranslations[headerCurrentLang][key]) {
-                elem.placeholder = headerTranslations[headerCurrentLang][key];
-            }
-        });
-
-        const userInfoElem = document.getElementById('userInfo');
-        if (userInfoElem && !userInfoElem.hasAttribute('data-i18n')) {
-             let name = userInfoElem.textContent.replace('Hello, ', '').replace('مرحباً، ', '');
-             userInfoElem.textContent = (headerCurrentLang === 'en' ? 'Hello, ' : 'مرحباً، ') + name;
-        }
+if (categoriesMenu) {
+  if (categoriesBtn) {
+    categoriesBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      // On mobile, clicking will keep it open or navigate if we want
     });
+  }
+}
 </script>
+<script src="js/localization.js"></script>
 <script src="js/theme.js"></script>
 </body>
 </html>

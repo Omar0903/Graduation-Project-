@@ -1,161 +1,376 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="js/auth.js"></script>
-  <title>User Profile</title>
+  <title>Manzili - Profile</title>
+
   <link rel="stylesheet" href="css/all.css">
   <link rel="stylesheet" href="css/header_style.css?v=2">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-
-    .profile-container {
-      width: 450px;
+    .profile-dashboard {
+      max-width: 1200px;
       margin: 60px auto;
+      display: flex;
+      gap: 40px;
+      padding: 0 20px;
+      align-items: flex-start;
+    }
+
+    /* Left Side: Avatar & Identity */
+    .profile-identity {
+      width: 320px;
       background: #fff;
-      padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-
-    .profile-header {
+      padding: 40px 20px;
       text-align: center;
-      margin-bottom: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border: 1px solid #eaeaea;
+      flex-shrink: 0;
     }
 
-    .profile-icon {
-      font-size: 60px;
-      color: #666;
-      margin-bottom: 10px;
+    body.dark-mode .profile-identity {
+      background: #111;
+      border-color: #222;
+      box-shadow: none;
     }
 
-    h1 {
-      margin: 0;
+    .avatar-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #f8f9fa;
+      padding: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    body.dark-mode .avatar-wrapper {
+      background: #1a1a1a;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 38px;
+      height: 38px;
+      background: #111;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: 3px solid #fff;
+      transition: all 0.2s;
+    }
+
+    body.dark-mode .edit-avatar-btn {
+      background: #00f2fe;
+      color: #000;
+      border-color: #111;
+    }
+
+    .edit-avatar-btn:hover {
+      transform: scale(1.1);
+      background: #333;
+    }
+
+    body.dark-mode .edit-avatar-btn:hover {
+      background: #fff;
+    }
+
+    .profile-identity h1 {
+      margin: 0 0 5px;
+      font-size: 24px;
       color: #222;
     }
 
-    .info-box {
-      background: #f0f0f0;
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-
-    .info-box p {
-      margin: 10px 0;
-      font-size: 15px;
-      color: #333;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      flex: 1;
-      text-align: center;
-      padding: 12px;
-      background: #333;
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    .btn:hover {
-      background: #555;
-    }
-
-    /* Dark Mode Pro Max */
-    body.dark-mode .profile-container {
-      background: rgba(255, 255, 255, 0.03) !important;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    body.dark-mode .profile-header h1 {
-      color: #ffffff;
-      text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
-    }
-
-    body.dark-mode .profile-icon {
-      color: #ededed;
-    }
-
-    body.dark-mode .info-box {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    body.dark-mode .info-box p {
-      color: #c9d1d9;
-    }
-
-    body.dark-mode .info-box p span {
-      color: #4facfe; /* Accent color for the values to stand out */
-      font-weight: 600;
-      text-shadow: 0 0 8px rgba(79, 172, 254, 0.3);
-    }
-
-    body.dark-mode .buttons .btn {
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+    body.dark-mode .profile-identity h1 {
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
     }
 
-    body.dark-mode .buttons .btn:hover {
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-      border-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
+    .username-badge {
+      display: inline-block;
+      background: #f1f3f5;
+      color: #555;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    body.dark-mode .username-badge {
+      background: #222;
+      color: #ccc;
+    }
+
+    .identity-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .identity-actions .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-edit {
+      background: #111;
+      color: #fff;
+      border: 1px solid #111;
+    }
+    .btn-edit:hover {
+      background: #333;
+    }
+
+    body.dark-mode .btn-edit {
+      background: #00f2fe;
+      color: #000;
+      border-color: #00f2fe;
+    }
+    body.dark-mode .btn-edit:hover {
+      background: #fff;
+      border-color: #fff;
+    }
+
+    /* Right Side: Information Details */
+    .profile-details {
+      flex: 1;
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border: 1px solid #eaeaea;
+    }
+
+    body.dark-mode .profile-details {
+      background: #111;
+      border-color: #222;
+      box-shadow: none;
+    }
+
+    .profile-details h2 {
+      margin: 0 0 30px;
+      font-size: 20px;
+      color: #111;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f5f5f5;
+    }
+
+    body.dark-mode .profile-details h2 {
+      color: #fff;
+      border-bottom-color: #222;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .info-item {
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #f0f0f0;
+      transition: all 0.3s;
+    }
+
+    .info-item:hover {
+      border-color: #ddd;
+    }
+
+    body.dark-mode .info-item {
+      background: #1a1a1a;
+      border-color: #252525;
+    }
+    body.dark-mode .info-item:hover {
+      border-color: #444;
+    }
+
+    .info-label {
+      font-size: 13px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .info-value {
+      font-size: 16px;
+      color: #222;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    body.dark-mode .info-value {
+      color: #fff;
+    }
+
+    .info-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 900px) {
+      .profile-dashboard {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .profile-identity {
+        width: auto;
+      }
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="profile-container">
-    <div class="profile-header">
-      <div class="profile-icon">
-        <i class="fa-regular fa-user"></i>
+  <!-- Topbar exactly as in the rest of the site -->
+  <header class="topbar">
+    <div class="topbar_inner">
+      <a class="brand" href="header.html">
+        <span class="brand_icon"><i class="fa-solid fa-chair"></i></span>
+        <span class="brand_text">Manzili</span>
+      </a>
+
+      <nav class="nav">
+        <a href="header.html" class="nav_link" data-i18n="nav_home">Home</a>
+        <div class="nav_dropdown">
+          <a href="#" class="nav_link" id="categoriesDropdownBtn" data-i18n="nav_categories" style="display:flex; align-items:center; gap:5px;">Categories <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></a>
+          <div class="nav_dropdown_menu" id="categoriesMenu">
+            <!-- Categories loaded via JS -->
+          </div>
+        </div>
+        <a href="best_sellers.html" class="nav_link" data-i18n="nav_best_sellers">Best Sellers</a>
+      </nav>
+
+      <div class="actions">
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" id="searchBtn" style="cursor: pointer;"></i>
+          <input type="text" id="searchInput" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
+        </div>
+        <button class="btn" id="themeToggle" title="Toggle Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <div class="user-area">
+          <button class="btn" id="authBtn" type="button">
+            <i class="fa-regular fa-user"></i>
+            <span id="authText" data-i18n="login_text">Login</span>
+          </button>
+
+          <div class="dropdown">
+            <button class="btn" id="settingsBtn" type="button">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-info" id="userInfo" data-i18n="hello_user">Hello, User</div>
+              <a href="profile.html" data-i18n="profile_menu">Profile</a>
+              <a href="edit-profile.html" data-i18n="edit_info">Edit Info</a>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn cart" type="button" aria-label="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge" id="cartBadge" hidden>0</span>
+        </button>
+
+        <button class="btn" id="langToggle" style="font-weight:600; font-size:14px; padding: 0 15px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langText">عربي</span>
+        </button>
       </div>
-      <h1>User Profile</h1>
     </div>
+  </header>
 
-    <div class="info-box">
-      <p><strong>First Name:</strong> <span id="profileFname"></span></p>
-      <p><strong>Last Name:</strong> <span id="profileLname"></span></p>
-      <p><strong>Username:</strong> <span id="profileUsername"></span></p>
-      <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-      <p><strong>Phone:</strong> <span id="profilePhone"></span></p>
-      <p><strong>Address:</strong> <span id="profileAddress"></span></p>
-      <p><strong>Payment:</strong> <span id="profilePayment"></span></p>
-      <p><strong>Status:</strong> <span id="profileStatus"></span></p>
-    </div>
+  <main class="page">
+    <div class="profile-dashboard">
+      
+      <!-- Identity Sidebar -->
+      <aside class="profile-identity">
+        <div class="avatar-wrapper">
+          <img id="profileAvatarImg" src="images/default-avatar.png" alt="User Avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+          <div class="edit-avatar-btn" id="avatarUploadBtn" title="Change Profile Picture">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" hidden>
+        </div>
 
-    <div class="buttons">
-      <a href="header.html" class="btn">Back to Home</a>
-      <a href="edit-profile.html" class="btn">Edit Profile</a>
+        <h1 id="profileFullName">Loading...</h1>
+        <div class="username-badge">@<span id="profileUsername">user</span></div>
+
+        <div class="identity-actions">
+          <a href="edit-profile.html" class="btn btn-edit" data-i18n="edit_profile_btn" style="display: block; text-align: center;">Edit Profile</a>
+        </div>
+      </aside>
+
+      <!-- Details Content -->
+      <section class="profile-details">
+        <h2 data-i18n="user_profile_title">Account Details</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label" data-i18n="first_name_lbl">First Name</span>
+            <span class="info-value" id="profileFname"></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label" data-i18n="last_name_lbl">Last Name</span>
+            <span class="info-value" id="profileLname"></span>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label" data-i18n="email_lbl">Email Address</span>
+            <span class="info-value" id="profileEmail"></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label" data-i18n="phone_lbl">Phone Number</span>
+            <span class="info-value" id="profilePhone"></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label" data-i18n="payment_lbl">Payment Method</span>
+            <span class="info-value" id="profilePayment"></span>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label" data-i18n="address_lbl">Shipping Address</span>
+            <span class="info-value" id="profileAddress"></span>
+          </div>
+        </div>
+      </section>
+
     </div>
-  </div>
+  </main>
+
+  <script type="module" src="js/upload.js"></script>
 
   <script type="module">
     import { auth, db } from "./js/firebase.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    let currentUserDocRef = null;
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -164,8 +379,8 @@
       }
 
       try {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+        currentUserDocRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(currentUserDocRef);
 
         if (!userSnap.exists()) {
           alert("User data not found");
@@ -174,14 +389,18 @@
 
         const data = userSnap.data();
 
-        document.getElementById("profileFname").textContent = data.fname || "";
-        document.getElementById("profileLname").textContent = data.lname || "";
-        document.getElementById("profileUsername").textContent = data.username || "";
-        document.getElementById("profileEmail").textContent = data.email || "";
-        document.getElementById("profilePhone").textContent = data.phone || "";
-        document.getElementById("profileAddress").textContent = data.address || "";
-        document.getElementById("profilePayment").textContent = data.payment || "";
-        document.getElementById("profileStatus").textContent = "Logged In";
+        document.getElementById("profileFname").textContent = data.fname || "-";
+        document.getElementById("profileLname").textContent = data.lname || "-";
+        document.getElementById("profileUsername").textContent = data.username || "user";
+        document.getElementById("profileFullName").textContent = `${data.fname || ''} ${data.lname || ''}`.trim() || data.username || "User";
+        document.getElementById("profileEmail").textContent = data.email || "-";
+        document.getElementById("profilePhone").textContent = data.phone || "-";
+        document.getElementById("profileAddress").textContent = data.address || "-";
+        document.getElementById("profilePayment").textContent = data.payment || "-";
+
+        if (data.avatar) {
+          document.getElementById("profileAvatarImg").src = data.avatar;
+        }
 
         localStorage.setItem("currentUser", data.username || "");
         localStorage.setItem("currentUserEmail", data.email || "");
@@ -190,7 +409,66 @@
         alert("Failed to load profile");
       }
     });
+
+    // Avatar Upload Logic
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarUploadBtn = document.getElementById("avatarUploadBtn");
+    const profileAvatarImg = document.getElementById("profileAvatarImg");
+
+    avatarUploadBtn.addEventListener("click", () => {
+      avatarInput.click();
+    });
+
+    avatarInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file && currentUserDocRef) {
+        
+        if (!file.type.startsWith('image/')) {
+          alert('Please upload a valid image file.');
+          return;
+        }
+        
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Image size should be less than 2MB.');
+          return;
+        }
+
+        const originalHTML = avatarUploadBtn.innerHTML;
+        avatarUploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+          const base64Str = event.target.result;
+          
+          try {
+            await updateDoc(currentUserDocRef, { avatar: base64Str });
+            profileAvatarImg.src = base64Str;
+          } catch (error) {
+            console.error("Error updating avatar:", error);
+            alert("Failed to save profile picture. It might be too large.");
+          } finally {
+            avatarUploadBtn.innerHTML = originalHTML;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Topbar logic 
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    if(settingsBtn) {
+        settingsBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle("show");
+        });
+        window.addEventListener("click", () => {
+          dropdownMenu.classList.remove("show");
+        });
+    }
   </script>
+  <script src="js/localization.js"></script>
   <script src="js/theme.js"></script>
 </body>
 </html>

@@ -19,7 +19,10 @@
 
     <div class="right-side">
 
-        <div class="lang-switch">
+        <div class="lang-switch" style="display:flex; gap:10px;">
+            <button id="themeToggle" class="theme-btn" title="Toggle Dark Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
             <button id="langToggle">
                 <i class="fa-solid fa-globe"></i>
                 <span id="langText">عربي</span>
@@ -117,97 +120,7 @@
 
 </div>
 
-<script>
-    const translations = {
-        en: {
-            create_account: "Create Account",
-            fill_info: "Please fill the information",
-            first_name_lbl: "First Name",
-            first_name_ph: "First Name",
-            last_name_lbl: "Last Name",
-            last_name_ph: "Last Name",
-            username_lbl: "Username",
-            username_ph: "Username",
-            email_lbl: "Email",
-            email_ph: "Enter your email",
-            send_code: "Send Verification Code",
-            verify_lbl: "Verification Code",
-            verify_ph: "Enter code",
-            verify_btn: "Verify",
-            password_lbl: "Password",
-            password_ph: "Enter password",
-            confirm_password_lbl: "Confirm Password",
-            confirm_password_ph: "Confirm password",
-            phone_lbl: "Phone Number",
-            phone_ph: "Phone number",
-            address_lbl: "Address",
-            address_ph: "Address",
-            payment_lbl: "Payment Method",
-            cash: "Cash",
-            fawry: "Fawry",
-            visa: "Visa",
-            register_btn: "Register",
-            have_account: "Have an account?",
-            login_link: "Login"
-        },
-        ar: {
-            create_account: "إنشاء حساب",
-            fill_info: "يرجى إدخال البيانات",
-            first_name_lbl: "الاسم الأول",
-            first_name_ph: "الاسم الأول",
-            last_name_lbl: "الاسم الأخير",
-            last_name_ph: "الاسم الأخير",
-            username_lbl: "اسم المستخدم",
-            username_ph: "اسم المستخدم",
-            email_lbl: "البريد الإلكتروني",
-            email_ph: "أدخل بريدك الإلكتروني",
-            send_code: "إرسال رمز التحقق",
-            verify_lbl: "رمز التحقق",
-            verify_ph: "أدخل الرمز",
-            verify_btn: "تحقق",
-            password_lbl: "كلمة المرور",
-            password_ph: "أدخل كلمة المرور",
-            confirm_password_lbl: "تأكيد كلمة المرور",
-            confirm_password_ph: "تأكيد كلمة المرور",
-            phone_lbl: "رقم الهاتف",
-            phone_ph: "رقم الهاتف",
-            address_lbl: "العنوان",
-            address_ph: "العنوان",
-            payment_lbl: "طريقة الدفع",
-            cash: "نقدي",
-            fawry: "فوري",
-            visa: "فيزا",
-            register_btn: "إنشاء حساب",
-            have_account: "لديك حساب بالفعل؟",
-            login_link: "تسجيل الدخول"
-        }
-    };
-
-    let currentLang = 'en';
-    const langToggleBtn = document.getElementById('langToggle');
-
-    langToggleBtn.addEventListener('click', () => {
-        currentLang = currentLang === 'en' ? 'ar' : 'en';
-        document.documentElement.lang = currentLang;
-        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-        
-        document.getElementById('langText').textContent = currentLang === 'en' ? 'عربي' : 'English';
-
-        document.querySelectorAll('[data-i18n]').forEach(elem => {
-            const key = elem.getAttribute('data-i18n');
-            if (translations[currentLang][key]) {
-                elem.textContent = translations[currentLang][key];
-            }
-        });
-
-        document.querySelectorAll('[data-i18n-ph]').forEach(elem => {
-            const key = elem.getAttribute('data-i18n-ph');
-            if (translations[currentLang][key]) {
-                elem.placeholder = translations[currentLang][key];
-            }
-        });
-    });
-</script>
+<script src="js/localization.js"></script>
 <script type="module" src="js/register_script.js"></script>
 <script src="js/theme.js"></script>
 </body>

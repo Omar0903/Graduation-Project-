@@ -1,99 +1,439 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="js/auth.js"></script>
-  <title>Edit Profile</title>
+  <title>Manzili - Edit Profile</title>
+
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/header_style.css?v=2">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
+    .profile-dashboard {
+      max-width: 1200px;
+      margin: 60px auto;
+      display: flex;
+      gap: 40px;
+      padding: 0 20px;
+      align-items: flex-start;
     }
 
-    .edit-container {
-      width: 450px;
-      margin: 50px auto;
-      background: white;
-      padding: 30px;
+    /* Left Side: Avatar & Identity */
+    .profile-identity {
+      width: 320px;
+      background: #fff;
       border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-
-    h1 {
+      padding: 40px 20px;
       text-align: center;
-      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border: 1px solid #eaeaea;
+      flex-shrink: 0;
     }
 
-    label {
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 6px;
-      font-weight: bold;
+    body.dark-mode .profile-identity {
+      background: #111;
+      border-color: #222;
+      box-shadow: none;
     }
 
-    input, select {
+    .avatar-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #f8f9fa;
+      padding: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    body.dark-mode .avatar-wrapper {
+      background: #1a1a1a;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .avatar-wrapper img {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 38px;
+      height: 38px;
+      background: #111;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: 3px solid #fff;
+      transition: all 0.2s;
+    }
+
+    body.dark-mode .edit-avatar-btn {
+      background: #00f2fe;
+      color: #000;
+      border-color: #111;
+    }
+
+    .edit-avatar-btn:hover {
+      transform: scale(1.1);
+      background: #333;
+    }
+
+    body.dark-mode .edit-avatar-btn:hover {
+      background: #fff;
+    }
+
+    .profile-identity h1 {
+      margin: 0 0 5px;
+      font-size: 24px;
+      color: #222;
+    }
+
+    body.dark-mode .profile-identity h1 {
+      color: #fff;
+    }
+
+    .username-badge {
+      display: inline-block;
+      background: #f1f3f5;
+      color: #555;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    body.dark-mode .username-badge {
+      background: #222;
+      color: #ccc;
+    }
+
+    .identity-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .identity-actions .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: #555;
+      border: 1px solid #ddd;
+    }
+    .btn-cancel:hover {
+      background: #f0f0f0;
+      color: #111;
+    }
+
+    body.dark-mode .btn-cancel {
+      color: #ddd;
+      border-color: rgba(255,255,255,0.2);
+    }
+    body.dark-mode .btn-cancel:hover {
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+    }
+
+    /* Right Side: Information Details Form */
+    .profile-details {
+      flex: 1;
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border: 1px solid #eaeaea;
+    }
+
+    body.dark-mode .profile-details {
+      background: #111;
+      border-color: #222;
+      box-shadow: none;
+    }
+
+    .profile-details h2 {
+      margin: 0 0 30px;
+      font-size: 20px;
+      color: #111;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f5f5f5;
+    }
+
+    body.dark-mode .profile-details h2 {
+      color: #fff;
+      border-bottom-color: #222;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .info-item label {
+      font-size: 13px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    body.dark-mode .info-item label {
+      color: #aaa;
+    }
+
+    .info-item input, .info-item select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ddd;
       border-radius: 10px;
       font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fafafa;
+      color: #222;
       box-sizing: border-box;
-      margin-bottom: 10px;
     }
 
-    button {
-      width: 100%;
-      padding: 12px;
+    .info-item input:focus, .info-item select:focus {
+      border-color: #00b894;
+      background: #fff;
+    }
+
+    .info-item input[readonly] {
+      background: #eee;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    body.dark-mode .info-item input, body.dark-mode .info-item select {
+      background: #1a1a1a;
+      border-color: #333;
+      color: #eee;
+    }
+
+    body.dark-mode .info-item input:focus, body.dark-mode .info-item select:focus {
+      border-color: #00f2fe;
+      background: #111;
+    }
+
+    body.dark-mode .info-item input[readonly] {
+      background: #252525;
+      color: #666;
+    }
+
+    .save-btn-container {
+      margin-top: 35px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-save {
+      background: #00b894;
+      color: #fff;
+      padding: 14px 35px;
       border: none;
-      background: #333;
-      color: white;
       border-radius: 10px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+      transition: all 0.2s;
     }
 
-    button:hover {
-      background: #555;
+    .btn-save:hover {
+      background: #00a082;
+      transform: translateY(-2px);
+    }
+
+    body.dark-mode .btn-save {
+      background: #00f2fe;
+      color: #000;
+    }
+
+    body.dark-mode .btn-save:hover {
+      background: #00d2df;
+    }
+
+    @media (max-width: 900px) {
+      .profile-dashboard {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .profile-identity {
+        width: auto;
+      }
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="edit-container">
-    <h1>Edit Profile</h1>
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar_inner">
+      <a class="brand" href="header.html">
+        <span class="brand_icon"><i class="fa-solid fa-chair"></i></span>
+        <span class="brand_text">Manzili</span>
+      </a>
 
-    <label for="fName">First Name</label>
-    <input type="text" id="fName">
+      <nav class="nav">
+        <a href="header.html" class="nav_link" data-i18n="nav_home">Home</a>
+        <div class="nav_dropdown">
+          <a href="#" class="nav_link" id="categoriesDropdownBtn" data-i18n="nav_categories" style="display:flex; align-items:center; gap:5px;">Categories <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></a>
+          <div class="nav_dropdown_menu" id="categoriesMenu">
+            <!-- Categories loaded via JS -->
+          </div>
+        </div>
+        <a href="best_sellers.html" class="nav_link" data-i18n="nav_best_sellers">Best Sellers</a>
+      </nav>
 
-    <label for="lName">Last Name</label>
-    <input type="text" id="lName">
+      <div class="actions">
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" id="searchBtn" style="cursor: pointer;"></i>
+          <input type="text" id="searchInput" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
+        </div>
+        <button class="btn" id="themeToggle" title="Toggle Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
 
-    <label for="userName">Username</label>
-    <input type="text" id="userName">
+        <div class="user-area">
+          <button class="btn" id="authBtn" type="button">
+            <i class="fa-regular fa-user"></i>
+            <span id="authText" data-i18n="login_text">Login</span>
+          </button>
 
-    <label for="email">Email</label>
-    <input type="email" id="email" readonly>
+          <div class="dropdown">
+            <button class="btn" id="settingsBtn" type="button">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-info" id="userInfo" data-i18n="hello_user">Hello, User</div>
+              <a href="profile.html" data-i18n="profile_menu">Profile</a>
+              <a href="edit-profile.html" data-i18n="edit_info">Edit Info</a>
+            </div>
+          </div>
+        </div>
 
-    <label for="phone">Phone</label>
-    <input type="text" id="phone">
+        <button class="btn cart" type="button" aria-label="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge" id="cartBadge" hidden>0</span>
+        </button>
 
-    <label for="address">Address</label>
-    <input type="text" id="address">
+        <button class="btn" id="langToggle" style="font-weight:600; font-size:14px; padding: 0 15px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langText">عربي</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <label for="payment">Payment</label>
-    <select id="payment">
-      <option value="Cash">Cash</option>
-      <option value="Visa">Visa</option>
-      <option value="MasterCard">MasterCard</option>
-    </select>
+  <main class="page">
+    <div class="profile-dashboard">
+      
+      <!-- Identity Sidebar -->
+      <aside class="profile-identity">
+        <div class="avatar-wrapper">
+          <img id="profileAvatarImg" src="images/default-avatar.png" alt="User Avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+          <div class="edit-avatar-btn" id="avatarUploadBtn" title="Change Profile Picture">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" hidden>
+        </div>
 
-    <button id="saveBtn">Save Changes</button>
-  </div>
+        <h1 id="profileFullName">Loading...</h1>
+        <div class="username-badge">@<span id="profileUsernameSpan">user</span></div>
+
+        <div class="identity-actions">
+          <a href="profile.html" class="btn btn-cancel" data-i18n="back_home_btn" style="display: block; text-align: center;">Cancel Editing</a>
+        </div>
+      </aside>
+
+      <!-- Details Form -->
+      <section class="profile-details">
+        <h2 data-i18n="edit_profile_title">Edit Profile</h2>
+        <div class="info-grid">
+          
+          <div class="info-item">
+            <label for="fName" data-i18n="first_name_lbl">First Name</label>
+            <input type="text" id="fName">
+          </div>
+          
+          <div class="info-item">
+            <label for="lName" data-i18n="last_name_lbl">Last Name</label>
+            <input type="text" id="lName">
+          </div>
+
+          <div class="info-item">
+            <label for="userName" data-i18n="username_lbl">Username</label>
+            <input type="text" id="userName">
+          </div>
+
+          <div class="info-item">
+            <label for="phone" data-i18n="phone_lbl">Phone Number</label>
+            <input type="text" id="phone">
+          </div>
+
+          <div class="info-item full-width">
+            <label for="email" data-i18n="email_lbl">Email Address</label>
+            <input type="email" id="email" readonly title="Email cannot be changed">
+          </div>
+          
+          <div class="info-item full-width">
+            <label for="address" data-i18n="address_lbl">Shipping Address</label>
+            <input type="text" id="address">
+          </div>
+
+          <div class="info-item">
+            <label for="payment" data-i18n="payment_lbl">Payment Method</label>
+            <select id="payment">
+              <option value="Cash" data-i18n="cash">Cash</option>
+              <option value="Visa" data-i18n="visa">Visa</option>
+              <option value="MasterCard" data-i18n="mastercard">MasterCard</option>
+            </select>
+          </div>
+          
+        </div>
+        
+        <div class="save-btn-container">
+          <button id="saveBtn" class="btn-save" data-i18n="save_changes_btn">Save Changes</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/upload.js"></script>
 
   <script type="module">
     import { auth, db } from "./js/firebase.js";
@@ -116,9 +456,10 @@
     const addressInput = document.getElementById("address");
     const paymentInput = document.getElementById("payment");
     const saveBtn = document.getElementById("saveBtn");
-
+    
     let currentUid = null;
     let currentUsername = "";
+    let currentUserDocRef = null;
 
     async function isUsernameTakenByAnotherUser(newUsername) {
       const q = query(collection(db, "users"), where("username", "==", newUsername.trim()));
@@ -137,10 +478,10 @@
       }
 
       currentUid = user.uid;
+      currentUserDocRef = doc(db, "users", user.uid);
 
       try {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+        const userSnap = await getDoc(currentUserDocRef);
 
         if (!userSnap.exists()) {
           alert("User data not found");
@@ -157,6 +498,14 @@
         phoneInput.value = data.phone || "";
         addressInput.value = data.address || "";
         paymentInput.value = data.payment || "Cash";
+
+        // Display sidebar info
+        document.getElementById("profileFullName").textContent = `${data.fname || ''} ${data.lname || ''}`.trim() || data.username || "User";
+        document.getElementById("profileUsernameSpan").textContent = data.username || "user";
+        
+        if (data.avatar) {
+          document.getElementById("profileAvatarImg").src = data.avatar;
+        }
       } catch (error) {
         console.error(error);
         alert("Failed to load user data");
@@ -184,16 +533,22 @@
         return;
       }
 
+      const originalHTML = saveBtn.innerHTML;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      saveBtn.disabled = true;
+
       try {
         if (newUsername !== currentUsername) {
           const taken = await isUsernameTakenByAnotherUser(newUsername);
           if (taken) {
             alert("Username already exists");
+            saveBtn.innerHTML = originalHTML;
+            saveBtn.disabled = false;
             return;
           }
         }
 
-        await updateDoc(doc(db, "users", currentUid), {
+        await updateDoc(currentUserDocRef, {
           fname: newFname,
           lname: newLname,
           username: newUsername,
@@ -210,14 +565,72 @@
           sessionStorage.setItem("currentUser", newUsername);
         }
 
-        alert("Profile updated successfully");
         window.location.href = "profile.html";
       } catch (error) {
         console.error(error);
         alert("Failed to update profile");
+        saveBtn.innerHTML = originalHTML;
+        saveBtn.disabled = false;
       }
     });
+
+    // Avatar Upload Logic
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarUploadBtn = document.getElementById("avatarUploadBtn");
+    const profileAvatarImg = document.getElementById("profileAvatarImg");
+
+    avatarUploadBtn.addEventListener("click", () => {
+      avatarInput.click();
+    });
+
+    avatarInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file && currentUserDocRef) {
+        if (!file.type.startsWith('image/')) {
+          alert('Please upload a valid image file.');
+          return;
+        }
+        
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Image size should be less than 2MB.');
+          return;
+        }
+
+        const originalHTML = avatarUploadBtn.innerHTML;
+        avatarUploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+          const base64Str = event.target.result;
+          try {
+            await updateDoc(currentUserDocRef, { avatar: base64Str });
+            profileAvatarImg.src = base64Str;
+          } catch (error) {
+            console.error("Error updating avatar:", error);
+            alert("Failed to save profile picture.");
+          } finally {
+            avatarUploadBtn.innerHTML = originalHTML;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Topbar logic 
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    if(settingsBtn) {
+        settingsBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle("show");
+        });
+        window.addEventListener("click", () => {
+          dropdownMenu.classList.remove("show");
+        });
+    }
   </script>
+  <script src="js/localization.js"></script>
   <script src="js/theme.js"></script>
 </body>
 </html>

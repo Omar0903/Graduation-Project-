@@ -17,7 +17,10 @@
         </div>
 
         <div class="right-side">
-            <div class="lang-switch">
+            <div class="lang-switch" style="display:flex; gap:10px;">
+                <button id="themeToggle" class="theme-btn" title="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
                 <button id="langToggle">
                     <i class="fa-solid fa-globe"></i>
                     <span id="langText">عربي</span>
@@ -58,59 +61,7 @@
 
     </div>
 
-    <script>
-        const translations = {
-            en: {
-                welcome_back: "Welcome Back",
-                please_login: "Please login to your account",
-                username_lbl: "Username",
-                username_ph: "Enter your username or email",
-                password_lbl: "Password",
-                password_ph: "Enter your password",
-                remember_me: "Remember me",
-                forgot_password: "Forgot Password?",
-                login_btn: "Login",
-                create_account: "Create Account"
-            },
-            ar: {
-                welcome_back: "مرحباً بعودتك",
-                please_login: "يرجى تسجيل الدخول إلى حسابك",
-                username_lbl: "اسم المستخدم",
-                username_ph: "أدخل اسم المستخدم أو البريد الإلكتروني",
-                password_lbl: "كلمة المرور",
-                password_ph: "أدخل كلمة المرور",
-                remember_me: "تذكرني",
-                forgot_password: "نسيت كلمة المرور؟",
-                login_btn: "تسجيل الدخول",
-                create_account: "إنشاء حساب"
-            }
-        };
-
-        let currentLang = 'en';
-        const langToggleBtn = document.getElementById('langToggle');
-
-        langToggleBtn.addEventListener('click', () => {
-            currentLang = currentLang === 'en' ? 'ar' : 'en';
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            
-            document.getElementById('langText').textContent = currentLang === 'en' ? 'عربي' : 'English';
-
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                if (translations[currentLang][key]) {
-                    elem.textContent = translations[currentLang][key];
-                }
-            });
-
-            document.querySelectorAll('[data-i18n-ph]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n-ph');
-                if (translations[currentLang][key]) {
-                    elem.placeholder = translations[currentLang][key];
-                }
-            });
-        });
-    </script>
+<script src="js/localization.js"></script>
     <script type="module" src="js/login_script.js"></script>
     <script src="js/theme.js"></script>
 </body>
