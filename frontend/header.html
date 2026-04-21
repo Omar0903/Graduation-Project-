@@ -76,8 +76,8 @@
     <div class="hero">
 
       <section class="hero_left">
-        <h1 data-i18n="hero_title">Find Furniture by Image</h1>
-        <p class="sub" data-i18n="hero_sub">Upload a photo and discover similar furniture instantly.</p>
+        <h1 data-i18n="hero_title">Discover Products by Image</h1>
+        <p class="sub" data-i18n="hero_sub">Upload a photo and discover similar products instantly.</p>
 
         <div class="upload_card">
           <div class="dropzone" id="dropzone">
@@ -182,17 +182,17 @@ onAuthStateChanged(auth, async (user) => {
 
     if (userSnap.exists()) {
       const data = userSnap.data();
-      const currentUsername = data.username || "User";
+      const displayName = data.fname || data.username || "User";
 
       if (localStorage.getItem("isLoggedIn") === "true") {
-        localStorage.setItem("currentUser", currentUsername);
+        localStorage.setItem("currentUser", data.username || displayName);
       }
 
       if (sessionStorage.getItem("isLoggedIn") === "true") {
-        sessionStorage.setItem("currentUser", currentUsername);
+        sessionStorage.setItem("currentUser", data.username || displayName);
       }
 
-      setLoggedInUI(currentUsername);
+      setLoggedInUI(displayName);
     } else {
       setLoggedOutUI();
     }

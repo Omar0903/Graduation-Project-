@@ -461,6 +461,30 @@
     let currentUsername = "";
     let currentUserDocRef = null;
 
+    // 0. TRULY INSTANT LOAD (0 seconds) before Firebase even initializes
+    if (localStorage.getItem("isLoggedIn") === "true" || sessionStorage.getItem("isLoggedIn") === "true") {
+      const cachedStr = localStorage.getItem("lastUserProfileData");
+      if (cachedStr) {
+        try {
+            const data = JSON.parse(cachedStr);
+            currentUsername = data.username || "";
+            fNameInput.value = data.fname || "";
+            lNameInput.value = data.lname || "";
+            userNameInput.value = data.username || "";
+            emailInput.value = data.email || "";
+            phoneInput.value = data.phone || "";
+            addressInput.value = data.address || "";
+            paymentInput.value = data.payment || "Cash";
+
+            document.getElementById("profileFullName").textContent = `${data.fname || ''} ${data.lname || ''}`.trim() || data.username || "User";
+            document.getElementById("profileUsernameSpan").textContent = data.username || "user";
+            if (data.avatar) {
+              document.getElementById("profileAvatarImg").src = data.avatar;
+            }
+        } catch(e) {}
+      }
+    }
+
     async function isUsernameTakenByAnotherUser(newUsername) {
       const q = query(collection(db, "users"), where("username", "==", newUsername.trim()));
       const snapshot = await getDocs(q);
@@ -480,15 +504,20 @@
       currentUid = user.uid;
       currentUserDocRef = doc(db, "users", user.uid);
 
+      // 2. Fetch fresh data from Firestore
       try {
         const userSnap = await getDoc(currentUserDocRef);
 
         if (!userSnap.exists()) {
-          alert("User data not found");
+          console.warn("User data not found");
           return;
         }
 
         const data = userSnap.data();
+        
+        // Update Cache
+        localStorage.setItem("lastUserProfileData", JSON.stringify(data));
+
         currentUsername = data.username || "";
 
         fNameInput.value = data.fname || "";
@@ -508,7 +537,6 @@
         }
       } catch (error) {
         console.error(error);
-        alert("Failed to load user data");
       }
     });
 

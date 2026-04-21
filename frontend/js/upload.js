@@ -440,8 +440,17 @@ if (fileInput) {
     const file = fileInput.files?.[0];
     if (!file) return;
 
+    // Reset input so the same file can trigger the change event again
+    fileInput.value = "";
+
     if (!isImageFile(file)) {
-      alert("Please upload an image file only");
+      showToast(localStorage.getItem('appLang') === 'ar' ? "يرجى رفع ملف صورة فقط" : "Please upload an image file only");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      const isAr = localStorage.getItem('appLang') === 'ar';
+      showToast(isAr ? "حجم الصورة يجب ألا يتجاوز 10 ميجابايت" : "Image size must not exceed 10 MB");
       return;
     }
 
@@ -471,7 +480,13 @@ if (dropzone) {
     if (!file) return;
 
     if (!isImageFile(file)) {
-      alert("Please drop image only");
+      showToast(localStorage.getItem('appLang') === 'ar' ? "يرجى سحب صورة فقط" : "Please drop image only");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      const isAr = localStorage.getItem('appLang') === 'ar';
+      showToast(isAr ? "حجم الصورة يجب ألا يتجاوز 10 ميجابايت" : "Image size must not exceed 10 MB");
       return;
     }
 

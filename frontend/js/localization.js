@@ -9,8 +9,8 @@ const globalTranslations = {
         logout_text: "Logout",
         profile_menu: "Profile",
         edit_info: "Edit Info",
-        hero_title: "Find Furniture by Image",
-        hero_sub: "Upload a photo and discover similar furniture instantly.",
+        hero_title: "Discover Products by Image",
+        hero_sub: "Upload a photo and discover similar products instantly.",
         drag_drop: "Drag & Drop Image Here or",
         upload_btn: "Upload Photo",
         similar_items: "Similar Items Found",
@@ -89,8 +89,8 @@ const globalTranslations = {
         logout_text: "تسجيل الخروج",
         profile_menu: "الملف الشخصي",
         edit_info: "تعديل المعلومات",
-        hero_title: "ابحث عن الأثاث بالصورة",
-        hero_sub: "قم برفع صورة واكتشف أثاثاً مشابهاً على الفور.",
+        hero_title: "اكتشف المنتجات بالصورة",
+        hero_sub: "قم برفع صورة واكتشف منتجات مشابهة على الفور.",
         drag_drop: "اسحب وأفلت الصورة هنا أو",
         upload_btn: "رفع صورة",
         similar_items: "عناصر مشابهة",
@@ -159,6 +159,64 @@ const globalTranslations = {
         edit_profile_title: "تعديل الملف الشخصي",
         save_changes_btn: "حفظ التغييرات"
     }
+};
+
+// ==========================
+// Toast Notification System (Global)
+// ==========================
+window.showToast = function(message, type = "error") {
+  let toastContainer = document.getElementById("toast-container");
+  if (!toastContainer) {
+    toastContainer = document.createElement("div");
+    toastContainer.id = "toast-container";
+    toastContainer.style.position = "fixed";
+    toastContainer.style.bottom = "30px";
+    toastContainer.style.right = "30px";
+    toastContainer.style.zIndex = "9999";
+    toastContainer.style.display = "flex";
+    toastContainer.style.flexDirection = "column";
+    toastContainer.style.gap = "10px";
+    document.body.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement("div");
+  toast.style.background = type === "error" ? "rgba(220, 53, 69, 0.95)" : "rgba(40, 167, 69, 0.95)";
+  toast.style.color = "#fff";
+  toast.style.padding = "15px 25px";
+  toast.style.borderRadius = "12px";
+  toast.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.2)";
+  toast.style.backdropFilter = "blur(10px)";
+  toast.style.fontFamily = "inherit";
+  toast.style.fontSize = "15px";
+  toast.style.fontWeight = "500";
+  toast.style.display = "flex";
+  toast.style.alignItems = "center";
+  toast.style.gap = "12px";
+  toast.style.transform = "translateX(120%)";
+  toast.style.opacity = "0";
+  toast.style.transition = "all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+  
+  const icon = document.createElement("i");
+  icon.className = type === "error" ? "fa-solid fa-circle-exclamation" : "fa-solid fa-circle-check";
+  icon.style.fontSize = "20px";
+
+  const text = document.createElement("span");
+  text.textContent = message;
+
+  toast.appendChild(icon);
+  toast.appendChild(text);
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.transform = "translateX(0)";
+    toast.style.opacity = "1";
+  }, 10);
+
+  setTimeout(() => {
+    toast.style.transform = "translateX(120%)";
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 400);
+  }, 3500);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -262,4 +320,49 @@ document.addEventListener("DOMContentLoaded", () => {
             window.dispatchEvent(new Event('langChanged'));
         });
     });
+
+    // ==========================================
+    // Sync Topbar Auth UI across all pages
+    // ==========================================
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true" || sessionStorage.getItem("isLoggedIn") === "true";
+    const authBtn = document.getElementById("authBtn");
+    const authText = document.getElementById("authText");
+    const settingsBtn = document.getElementById("settingsBtn");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const userInfoElem = document.getElementById("userInfo");
+
+    if (authBtn) {
+        if (isLoggedIn) {
+            if (authText) {
+                authText.textContent = currentLang === 'ar' ? "تسجيل الخروج" : "Logout";
+                authText.setAttribute('data-i18n', 'logout_text');
+            }
+            if (settingsBtn) settingsBtn.style.display = "inline-flex";
+            
+            let displayName = "User";
+            try {
+                const cached = localStorage.getItem("lastUserProfileData");
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    displayName = data.fname || data.username || "User";
+                }
+            } catch(e) {}
+            
+            if (userInfoElem) {
+                userInfoElem.textContent = (currentLang === 'ar' ? "مرحباً، " : "Hello, ") + displayName;
+                userInfoElem.removeAttribute('data-i18n');
+            }
+        } else {
+            if (authText) {
+                authText.textContent = currentLang === 'ar' ? "تسجيل الدخول" : "Login";
+                authText.setAttribute('data-i18n', 'login_text');
+            }
+            if (settingsBtn) settingsBtn.style.display = "none";
+            if (dropdownMenu) dropdownMenu.classList.remove("show");
+            if (userInfoElem) {
+                userInfoElem.textContent = currentLang === 'ar' ? "مرحباً، مستخدم" : "Hello, User";
+                userInfoElem.setAttribute('data-i18n', 'hello_user');
+            }
+        }
+    }
 });

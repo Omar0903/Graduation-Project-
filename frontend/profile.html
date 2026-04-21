@@ -370,6 +370,27 @@
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // 0. TRULY INSTANT LOAD (0 seconds) before Firebase even initializes
+    if (localStorage.getItem("isLoggedIn") === "true" || sessionStorage.getItem("isLoggedIn") === "true") {
+      const cachedStr = localStorage.getItem("lastUserProfileData");
+      if (cachedStr) {
+        try {
+            const data = JSON.parse(cachedStr);
+            document.getElementById("profileFname").textContent = data.fname || "-";
+            document.getElementById("profileLname").textContent = data.lname || "-";
+            document.getElementById("profileUsername").textContent = data.username || "user";
+            document.getElementById("profileFullName").textContent = `${data.fname || ''} ${data.lname || ''}`.trim() || data.username || "User";
+            document.getElementById("profileEmail").textContent = data.email || "-";
+            document.getElementById("profilePhone").textContent = data.phone || "-";
+            document.getElementById("profileAddress").textContent = data.address || "-";
+            document.getElementById("profilePayment").textContent = data.payment || "-";
+            if (data.avatar) {
+              document.getElementById("profileAvatarImg").src = data.avatar;
+            }
+        } catch(e) {}
+      }
+    }
+
     let currentUserDocRef = null;
 
     onAuthStateChanged(auth, async (user) => {
@@ -378,17 +399,23 @@
         return;
       }
 
+      currentUserDocRef = doc(db, "users", user.uid);
+      
+      // 2. Fetch fresh data from Firestore
       try {
-        currentUserDocRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(currentUserDocRef);
 
         if (!userSnap.exists()) {
-          alert("User data not found");
+          console.warn("User data not found");
           return;
         }
 
         const data = userSnap.data();
+        
+        // Cache the new data
+        localStorage.setItem("lastUserProfileData", JSON.stringify(data));
 
+        // Update DOM
         document.getElementById("profileFname").textContent = data.fname || "-";
         document.getElementById("profileLname").textContent = data.lname || "-";
         document.getElementById("profileUsername").textContent = data.username || "user";
@@ -406,7 +433,6 @@
         localStorage.setItem("currentUserEmail", data.email || "");
       } catch (error) {
         console.error(error);
-        alert("Failed to load profile");
       }
     });
 
