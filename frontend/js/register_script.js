@@ -69,13 +69,29 @@ async function isUsernameTaken(userNameValue) {
 }
 
 sendCodeBtn.addEventListener("click", async () => {
+    const lang = localStorage.getItem('appLang') || 'en';
     if (
         fname.value.trim() === "" ||
         lname.value.trim() === "" ||
         username.value.trim() === "" ||
         email.value.trim() === ""
     ) {
-        showToast("Fill all fields first", "error");
+        showToast(lang === 'ar' ? "يرجى ملء جميع الحقول أولاً" : "Fill all fields first", "error");
+        return;
+    }
+
+    const nameRegex = /^[a-zA-Z\u0621-\u064A\s]+$/;
+    if (!nameRegex.test(fname.value.trim())) {
+        showToast(lang === 'ar' ? "الاسم الأول يجب أن يحتوي على حروف فقط" : "First name must contain only letters", "error");
+        return;
+    }
+    if (!nameRegex.test(lname.value.trim())) {
+        showToast(lang === 'ar' ? "الاسم الأخير يجب أن يحتوي على حروف فقط" : "Last name must contain only letters", "error");
+        return;
+    }
+
+    if (!email.value.trim().toLowerCase().endsWith("@gmail.com")) {
+        showToast(lang === 'ar' ? "البريد الإلكتروني يجب أن ينتهي بـ @gmail.com" : "Email must end with @gmail.com", "error");
         return;
     }
 
@@ -107,7 +123,7 @@ sendCodeBtn.addEventListener("click", async () => {
         startResendTimer(data.expires_in || 60);
     } catch (err) {
         console.error(err);
-        showToast("Error sending code", "error");
+        showToast(err.message || String(err) || "Error sending code", "error");
     }
 });
 
@@ -147,30 +163,62 @@ verifyBtn.addEventListener("click", async () => {
         }
     } catch (err) {
         console.error(err);
-        showToast("Error verifying", "error");
+        showToast(err.message || String(err) || "Error verifying", "error");
     }
 });
 
 registerBtn.addEventListener("click", async function (event) {
     event.preventDefault();
+    const lang = localStorage.getItem('appLang') || 'en';
 
     if (!isOtpVerified) {
-        showToast("Please verify your email first", "error");
+        showToast(lang === 'ar' ? "يرجى التحقق من بريدك الإلكتروني أولاً" : "Please verify your email first", "error");
         return;
     }
 
     if (
-        password.value.trim() === "" ||
-        confirmPassword.value.trim() === "" ||
+        password.value === "" ||
+        confirmPassword.value === "" ||
         phone.value.trim() === "" ||
         address.value.trim() === ""
     ) {
-        showToast("Please fill in all fields", "error");
+        showToast(lang === 'ar' ? "يرجى إدخال باقي البيانات" : "Please fill in all fields", "error");
         return;
     }
 
-    if (password.value !== confirmPassword.value) {
-        showToast("Passwords do not match", "error");
+    if (!/^\d{11}$/.test(phone.value.trim())) {
+        showToast(lang === 'ar' ? "رقم الهاتف يجب أن يتكون من 11 رقماً فقط" : "Phone number must be exactly 11 digits", "error");
+        return;
+    }
+
+    const pwd = password.value;
+    if (pwd.length < 8) {
+        showToast(lang === 'ar' ? "كلمة المرور يجب أن لا تقل عن 8 أحرف" : "Password must be at least 8 characters", "error");
+        return;
+    }
+    if (/\s/.test(pwd)) {
+        showToast(lang === 'ar' ? "كلمة المرور يجب ألا تحتوي على مسافات" : "Password must not contain spaces", "error");
+        return;
+    }
+    if (!/[A-Z]/.test(pwd)) {
+        showToast(lang === 'ar' ? "كلمة المرور يجب أن تحتوي على حرف كبير (Capital) على الأقل" : "Password must contain at least one capital letter", "error");
+        return;
+    }
+    if (!/[a-z]/.test(pwd)) {
+        showToast(lang === 'ar' ? "كلمة المرور يجب أن تحتوي على حرف صغير (Small) على الأقل" : "Password must contain at least one small letter", "error");
+        return;
+    }
+    if (!/[0-9]/.test(pwd)) {
+        showToast(lang === 'ar' ? "كلمة المرور يجب أن تحتوي على رقم واحد على الأقل" : "Password must contain at least one number", "error");
+        return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(pwd)) {
+        showToast(lang === 'ar' ? "كلمة المرور يجب أن تحتوي على رمز خاص (مثل @, #, $)" : "Password must contain at least one special character", "error");
+        return;
+    }
+
+    if (pwd !== confirmPassword.value) {
+        showToast(lang === 'ar' ? "كلمة المرور غير متطابقة" : "Passwords do not match", "error");
         return;
     }
 
