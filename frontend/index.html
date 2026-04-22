@@ -1,65 +1,373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/all.css">
-    <link rel="stylesheet" href="css/login_style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="js/auth.js"></script>
+  <title>Manzili - Home</title>
+
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/header_style.css?v=2">
 </head>
 <body>
 
-    <div class="container">
+  <header class="topbar">
+    <div class="topbar_inner">
 
-        <div class="left-side">
-            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f" alt="Login Image">
+      <a class="brand" href="index.html">
+        <span class="brand_icon"><i class="fa-solid fa-chair"></i></span>
+        <span class="brand_text">Manzili</span>
+      </a>
+
+      <nav class="nav">
+        <a href="index.html" class="nav_link active" data-i18n="nav_home">Home</a>
+        <div class="nav_dropdown">
+          <a href="#" class="nav_link" id="categoriesDropdownBtn" data-i18n="nav_categories" style="display:flex; align-items:center; gap:5px;">Categories <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></a>
+          <div class="nav_dropdown_menu" id="categoriesMenu">
+            <!-- Categories loaded via JS -->
+          </div>
+        </div>
+        <a href="image_search.html" class="nav_link" data-i18n="nav_image_search">Image Search</a>
+        <a href="best_sellers.html" class="nav_link" data-i18n="nav_best_sellers">Best Sellers</a>
+      </nav>
+
+      <div class="actions">
+        
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" id="searchBtn" style="cursor: pointer;"></i>
+          <input type="text" id="searchInput" placeholder="Search for furniture..." data-i18n-ph="search_ph" />
+        </div>
+        <button class="btn" id="themeToggle" title="Toggle Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <div class="user-area">
+          <button class="btn" id="authBtn" type="button">
+            <i class="fa-regular fa-user"></i>
+            <span id="authText" data-i18n="login_text">Login</span>
+          </button>
+
+          <div class="dropdown">
+            <button class="btn" id="settingsBtn" type="button">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-info" id="userInfo" data-i18n="hello_user">Hello, User</div>
+              <a href="profile.html" data-i18n="profile_menu">Profile</a>
+              <a href="edit-profile.html" data-i18n="edit_info">Edit Info</a>
+            </div>
+          </div>
         </div>
 
-        <div class="right-side">
-            <div class="lang-switch">
-                <button id="langToggle">
-                    <i class="fa-solid fa-globe"></i>
-                    <span id="langText">عربي</span>
-                </button>
-            </div>
+        <button class="btn cart" type="button" aria-label="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge" id="cartBadge" hidden>0</span>
+        </button>
 
-            <div class="login-box">
-                <h2 data-i18n="welcome_back">Welcome Back</h2>
-                <p data-i18n="please_login">Please login to your account</p>
+        <button class="btn" id="langToggle" style="font-weight:600; font-size:14px; padding: 0 15px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langText">عربي</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-                <form>
-                    <div class="input-group">
-                        <label data-i18n="username_lbl">Username</label>
-                        <input type="text" placeholder="Enter your username or email" id="userName" data-i18n-ph="username_ph" required>
-                    </div>
+  <style>
+    /* Carousel Track Styling Only */
+    .carousel-track-container {
+      width: 100%;
+      overflow: hidden;
+      padding: 20px 0;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 24px;
+      width: max-content;
+      animation: slideLeft 50s linear infinite;
+    }
+    .carousel-track:hover {
+      animation-play-state: paused;
+    }
+    
+    @keyframes slideLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 12px)); } /* 24px gap / 2 */
+    }
+    
+    /* Ensure product cards in carousel look right */
+    .carousel-track .product_card {
+      width: 280px;
+      flex-shrink: 0;
+      margin: 0;
+    }
+  </style>
 
-                    <div class="input-group">
-                        <label data-i18n="password_lbl">Password</label>
-                        <input type="password" placeholder="Enter your password" id="password" data-i18n-ph="password_ph" required>
-                    </div>
+  <main class="page">
+    <div class="hero" id="fallbackHero">
+      <div style="text-align: center; width: 100%; grid-column: 1 / -1; margin-top: 50px;">
+        <h1 data-i18n="hero_title_home">Welcome to Manzili</h1>
+        <p class="sub" data-i18n="hero_sub_home">Search, upload images, and find your perfect furniture effortlessly.</p>
+        <br>
+        <a href="image_search.html" class="upload_btn" style="text-decoration: none;">
+           <span data-i18n="try_image_search">Try Image Search</span> <i class="fa-solid fa-camera"></i>
+        </a>
+      </div>
+    </div>
+  </main>
 
-                    <div class="remember-box">
-                        <input type="checkbox" id="rememberMe">
-                        <label for="rememberMe" data-i18n="remember_me">Remember me</label>
-                    </div>
-                    <div class="extra-links">
-                        <a href="forgot-password.html" data-i18n="forgot_password">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" id="login-btn" data-i18n="login_btn">Login</button>
-
-                    <div class="extra-links">
-                        <a href="register.html" data-i18n="create_account">Create Account</a>
-                    </div>
-                </form>
-            </div>
-        </div>
+  <section class="results_section" id="recommendedSection" style="display: none; min-height: 60vh;">
+    <div class="container" style="overflow: hidden; position: relative;">
+      <h2 id="recommendedTitle" data-i18n="recommended_items">Recommended Items</h2>
+      
+      <div id="slideshowContainer" style="display: flex; transition: transform 0.8s ease-in-out; width: 200%;">
+        <!-- Page 1 -->
+        <div class="results_grid" id="slidePage1" style="width: 50%; flex-shrink: 0; gap: 24px;"></div>
+        <!-- Page 2 -->
+        <div class="results_grid" id="slidePage2" style="width: 50%; flex-shrink: 0; gap: 24px;"></div>
+      </div>
 
     </div>
+  </section>
 
-<script src="js/localization.js"></script>
-    <script type="module" src="js/login_script.js"></script>
-    <script src="js/theme.js"></script>
-</body>
-</html>
+  <section class="results_section" id="resultsSection" style="display:none;">
+    <div class="container">
+      <h2 data-i18n="similar_items">Similar Items Found</h2>
+      <div class="results_grid" id="resultsGrid"></div>
+    </div>
+  </section>
+  
+  <aside class="cart_div" id="cart_div">
+      <div class="cart_container">
+          <div class="first_part">
+              <p id="cart_counter" data-i18n="your_cart">your cart (0)</p>
+              <i class="fa-solid fa-xmark exit_mark" id="exit_mark"></i>
+          </div>
+  
+          <div class="cart_content">
+              <h2 class="cart_title" data-i18n="cart_empty">your cart is empty</h2>
+          </div>
+  
+          <div class="total_section">
+              <div class="total_cast_section">
+                  <span class="total_cost_lable" data-i18n="total_cost">total cost:</span>
+  
+                  <div class="total_cast_price">
+                      <p class="final-total">$0</p>
+                  </div>
+              </div>
+  
+              <button class="checkout-btn" data-i18n="checkout"> checkout</button>
+          </div>
+      </div>
+  </aside>
+  
+  <script type="module" src="js/upload.js"></script>
+  
+  <script type="module">
+  import { auth, db } from "./js/firebase.js";
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  
+  const authBtn = document.getElementById("authBtn");
+  const authText = document.getElementById("authText");
+  const settingsBtn = document.getElementById("settingsBtn");
+  const dropdownMenu = document.getElementById("dropdownMenu");
+  const userInfo = document.getElementById("userInfo");
+  
+  function isLoggedIn() {
+    return localStorage.getItem("isLoggedIn") === "true" ||
+           sessionStorage.getItem("isLoggedIn") === "true";
+  }
+  
+  function setLoggedOutUI() {
+    const isAr = document.documentElement.lang === 'ar';
+    authText.textContent = isAr ? "تسجيل الدخول" : "Login";
+    authText.setAttribute('data-i18n', 'login_text');
+    settingsBtn.style.display = "none";
+    dropdownMenu.classList.remove("show");
+    userInfo.textContent = isAr ? "مرحباً، مستخدم" : "Hello, User";
+    userInfo.setAttribute('data-i18n', 'hello_user');
+  }
+  
+  function setLoggedInUI(username) {
+    const isAr = document.documentElement.lang === 'ar';
+    authText.textContent = isAr ? "تسجيل الخروج" : "Logout";
+    authText.setAttribute('data-i18n', 'logout_text');
+    settingsBtn.style.display = "inline-flex";
+    userInfo.textContent = (isAr ? "مرحباً، " : "Hello, ") + username;
+    userInfo.removeAttribute('data-i18n');
+  }
+  
+  onAuthStateChanged(auth, async (user) => {
+    if (!user || !isLoggedIn()) {
+      setLoggedOutUI();
+      return;
+    }
+  
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+  
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        const displayName = data.fname || data.username || "User";
+  
+        if (localStorage.getItem("isLoggedIn") === "true") {
+          localStorage.setItem("currentUser", data.username || displayName);
+        }
+  
+        if (sessionStorage.getItem("isLoggedIn") === "true") {
+          sessionStorage.setItem("currentUser", data.username || displayName);
+        }
+  
+        setLoggedInUI(displayName);
+        
+        // --- RECOMMENDATION CAROUSEL LOGIC ---
+        if (data.searchCounts) {
+          const counts = data.searchCounts;
+          let maxCount = 0;
+          let topClass = null;
+          for (const [cls, count] of Object.entries(counts)) {
+            if (count > maxCount) {
+              maxCount = count;
+              topClass = cls;
+            }
+          }
+          
+          if (topClass) {
+            fetch(`http://127.0.0.1:8000/category-images?category=${encodeURIComponent(topClass)}&page=1&limit=10`)
+              .then(res => res.json())
+              .then(apiData => {
+                if (apiData.images && apiData.images.length > 0) {
+                  const isAr = document.documentElement.lang === 'ar';
+                  
+                  let cleanName = topClass.replace(/_dataset/gi, "").replace(/ dataset/gi, "").replace(/_/g, " ").trim();
+                  cleanName = cleanName.replace(/\b\w/g, c => c.toUpperCase());
+                  
+                  const dict = {
+                    "Bed": "سرير", "Chair": "كرسي", "Table": "طاولة", "Sofas": "كنبة",
+                    "Carpet": "سجادة", "Television": "تلفزيون", "Refrigerator": "ثلاجة",
+                    "Microwave": "ميكروويف", "Dishwasher": "غسالة أطباق", "Toaster": "محمصة",
+                    "Waffle Iron": "صانع وافل", "Vacuum Cleaner": "مكنسة كهربائية",
+                    "Electric Fan": "مروحة", "Hand Blower": "مجفف هواء", "Coffe Maker": "ماكينة قهوة",
+                    "Teapot": "إبريق شاي", "Crock Pot": "حلة طهي", "Mixing Bowl": "وعاء خلط",
+                    "Frying Pan": "مقلاة", "Pitcher": "إبريق", "Salt Shaker": "ملاحة",
+                    "Cleaver": "ساطور", "Stove": "بوتاجاز", "Wardrobe": "دولاب", "Chiffonier": "تسريحة"
+                  };
+                  let arName = cleanName;
+                  for (let key in dict) {
+                      if (cleanName.toLowerCase().includes(key.toLowerCase())) { arName = dict[key]; break; }
+                  }
+                  
+                  const displayName = isAr ? arName : cleanName;
+                  document.getElementById("recommendedTitle").textContent = isAr ? "عناصر مقترحة" : "Recommended Items";
+                  
+                  const page1 = document.getElementById("slidePage1");
+                  const page2 = document.getElementById("slidePage2");
+                  const slideshowContainer = document.getElementById("slideshowContainer");
+                  
+                  page1.innerHTML = "";
+                  page2.innerHTML = "";
+                  
+                  // Render items into two pages
+                  apiData.images.forEach((imgUrl, index) => {
+                    let itemPrice = Math.floor(Math.random() * (850 - 50) + 50); // basic price for visual
+                    const cardHtml = `
+                      <div class="product_card">
+                        <img src="${imgUrl}" alt="${displayName}" onerror="this.src='images/placeholder.png'">
+                        <h4>${displayName}</h4>
+                        <p>$${itemPrice}.00</p>
+                        <button class="add_cart_btn" onclick="addToCart('${imgUrl}', ${itemPrice}, '${displayName.replace(/'/g, "\\'")}')">
+                          ${isAr ? 'أضف للسلة' : 'Add to Cart'}
+                        </button>
+                      </div>
+                    `;
+                    if (index < 5) {
+                      page1.innerHTML += cardHtml;
+                    } else if (index < 10) {
+                      page2.innerHTML += cardHtml;
+                    }
+                  });
+                  
+                  // Keep Welcome to Manzili visible
+                  document.getElementById("recommendedSection").style.display = "block";
+                  
+                  // Slideshow logic
+                  let currentSlide = 0;
+                  setInterval(() => {
+                    currentSlide = currentSlide === 0 ? 1 : 0;
+                    slideshowContainer.style.transform = `translateX(-${currentSlide * 50}%)`;
+                  }, 5000);
+                }
+              })
+              .catch(err => console.error("Error fetching recommended images:", err));
+          }
+        }
+        // -------------------------------------
+      } else {
+        setLoggedOutUI();
+      }
+    } catch (error) {
+      console.error(error);
+      setLoggedOutUI();
+    }
+  });
+  
+  authBtn.addEventListener("click", async () => {
+    if (isLoggedIn()) {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.error(error);
+      }
+  
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("currentUserEmail");
+      localStorage.removeItem("expiryTime");
+      
+      // Clear user session data (Cart, Search, Profile)
+      localStorage.removeItem("manzili_cart");
+      localStorage.removeItem("savedResults");
+      localStorage.removeItem("savedPredictedClass");
+      localStorage.removeItem("uploadedImage");
+      localStorage.removeItem("uploadedFileName");
+      localStorage.removeItem("lastUserProfileData");
+  
+      sessionStorage.removeItem("isLoggedIn");
+      sessionStorage.removeItem("currentUser");
+      sessionStorage.removeItem("currentUserEmail");
+      sessionStorage.removeItem("expiryTime");
+  
+      window.location.href = "login.html";
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+  
+  settingsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdownMenu.classList.toggle("show");
+  });
+  
+  window.addEventListener("click", () => {
+    dropdownMenu.classList.remove("show");
+  });
+  
+  // Categories Dropdown Logic
+  const categoriesBtn = document.getElementById("categoriesDropdownBtn");
+  const categoriesMenu = document.getElementById("categoriesMenu");
+  
+  if (categoriesMenu) {
+    if (categoriesBtn) {
+      categoriesBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+      });
+    }
+  }
+  </script>
+  <script src="js/localization.js"></script>
+  <script src="js/theme.js"></script>
+  </body>
+  </html>

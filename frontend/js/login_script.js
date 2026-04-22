@@ -100,7 +100,7 @@ loginBtn.addEventListener("click", async function (event) {
             localStorage.removeItem("rememberedUsername");
         }
 
-        window.location.href = "header.html";
+        window.location.href = "index.html";
     } catch (error) {
         console.error(error);
         showToast("Invalid username/email or password ❌", "error");

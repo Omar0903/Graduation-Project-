@@ -3,6 +3,7 @@ const globalTranslations = {
         // Header
         nav_home: "Home",
         nav_categories: "Categories",
+        nav_image_search: "Image Search",
         nav_best_sellers: "Best Sellers",
         search_ph: "Search for furniture...",
         login_text: "Login",
@@ -11,6 +12,9 @@ const globalTranslations = {
         edit_info: "Edit Info",
         hero_title: "Discover Products by Image",
         hero_sub: "Upload a photo and discover similar products instantly.",
+        hero_title_home: "Welcome to Manzili",
+        hero_sub_home: "Search, upload images, and find your perfect furniture effortlessly.",
+        try_image_search: "Try Image Search",
         drag_drop: "Drag & Drop Image Here or",
         upload_btn: "Upload Photo",
         similar_items: "Similar Items Found",
@@ -22,6 +26,7 @@ const globalTranslations = {
         add_to_cart: "Add to Cart",
         loading_text: "Loading...",
         search_cat_ph: "Search categories...",
+        recommended_items: "Recommended Items",
 
         // Login
         welcome_back: "Welcome Back",
@@ -83,6 +88,7 @@ const globalTranslations = {
         // Header
         nav_home: "الرئيسية",
         nav_categories: "الفئات",
+        nav_image_search: "بحث بالصورة",
         nav_best_sellers: "الأكثر مبيعاً",
         search_ph: "ابحث عن الأثاث...",
         login_text: "تسجيل الدخول",
@@ -91,6 +97,9 @@ const globalTranslations = {
         edit_info: "تعديل المعلومات",
         hero_title: "اكتشف المنتجات بالصورة",
         hero_sub: "قم برفع صورة واكتشف منتجات مشابهة على الفور.",
+        hero_title_home: "مرحباً بك في منزلي",
+        hero_sub_home: "ابحث، ارفع الصور، واعثر على أثاثك المثالي بكل سهولة.",
+        try_image_search: "جرب البحث بالصورة",
         drag_drop: "اسحب وأفلت الصورة هنا أو",
         upload_btn: "رفع صورة",
         similar_items: "عناصر مشابهة",
@@ -102,6 +111,7 @@ const globalTranslations = {
         add_to_cart: "أضف للسلة",
         loading_text: "جاري التحميل...",
         search_cat_ph: "البحث في الفئات...",
+        recommended_items: "عناصر مقترحة",
 
         // Login
         welcome_back: "مرحباً بعودتك",

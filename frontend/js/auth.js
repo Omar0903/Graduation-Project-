@@ -3,6 +3,14 @@ function clearAuthData() {
     localStorage.removeItem("currentUser");
     localStorage.removeItem("currentUserEmail");
     localStorage.removeItem("expiryTime");
+    
+    // Clear user session data
+    localStorage.removeItem("manzili_cart");
+    localStorage.removeItem("savedResults");
+    localStorage.removeItem("savedPredictedClass");
+    localStorage.removeItem("uploadedImage");
+    localStorage.removeItem("uploadedFileName");
+    localStorage.removeItem("lastUserProfileData");
 
     sessionStorage.removeItem("isLoggedIn");
     sessionStorage.removeItem("currentUser");

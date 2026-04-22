@@ -1,9 +1,33 @@
+import { auth, db } from "./firebase.js";
+import { doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+async function updateUserSearchHistory(className) {
+  if (!className || className === "Image Results" || className === "Search Results") return;
+  
+  const user = auth.currentUser;
+  if (!user) return; // Only track for logged-in users
+
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      let searchCounts = userData.searchCounts || {};
+      searchCounts[className] = (searchCounts[className] || 0) + 1;
+      await updateDoc(userRef, { searchCounts });
+    }
+  } catch (error) {
+    console.error("Error updating search history:", error);
+  }
+}
+
 // ==========================
 // Cart Data
 // ==========================
 let cartItems = JSON.parse(localStorage.getItem('manzili_cart')) || [];
 let totalPrice = 0;
 let c_counter = 0;
+
 
 // ==========================
 // Upload Elements
@@ -82,8 +106,8 @@ window.addEventListener('langChanged', () => {
   } else if (categoryId && typeof window.loadCategoryImages === 'function') {
     window.loadCategoryImages(categoryId, typeof currentCategoryPage !== 'undefined' ? currentCategoryPage : 1);
     populateSidebar(categoryId);
-  } else {
-    // Only restore home page search results if not on category or best sellers page
+  } else if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/' && !window.location.pathname.endsWith('/')) {
+    // Only restore search results if not on home, category or best sellers page
     restoreSavedResults();
   }
 });
@@ -106,6 +130,11 @@ async function sendImageToAPI(file) {
 
     localStorage.setItem(SAVED_RESULTS_KEY, JSON.stringify(data));
     localStorage.setItem(SAVED_CLASS_KEY, data.predicted_class || "Image Results");
+    
+    // Track search history
+    if (data.predicted_class) {
+      updateUserSearchHistory(data.predicted_class);
+    }
 
     showResults(data);
     resultsSection.style.display = "block";
@@ -128,6 +157,13 @@ async function sendTextSearch(query) {
 
     if (data.similar_items && data.similar_items.length > 0) {
         localStorage.setItem(SAVED_RESULTS_KEY, JSON.stringify(data));
+        
+        // Track search history for text search. Text search may not return predicted_class, so check category of first item
+        const firstCategory = data.similar_items[0].category;
+        if (firstCategory && firstCategory !== "Search Results") {
+          updateUserSearchHistory(firstCategory);
+        }
+
         showResults(data);
         resultsSection.style.display = "block";
         
@@ -521,7 +557,7 @@ if (!urlParams.get('class') && resultsSection) {
   resultsSection.style.display = "none";
 }
 restoreSavedPreview();
-if (!urlParams.get('class')) {
+if (!urlParams.get('class') && !window.location.pathname.includes('index.html') && window.location.pathname !== '/' && !window.location.pathname.endsWith('/')) {
   restoreSavedResults();
 }
 update_cart_items(); // ensure cart is formatted on load
