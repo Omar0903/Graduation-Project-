@@ -260,13 +260,13 @@
                // Shuffle the combined items to mix them visually across both pages
                allItems = allItems.sort(() => Math.random() - 0.5);
                
-               if (allItems.length > 0) {
+               window.recommendedItemsData = allItems;
+               window.renderRecommendedItems = function() {
                  const isAr = document.documentElement.lang === 'ar';
                  document.getElementById("recommendedTitle").textContent = isAr ? "عناصر مقترحة" : "Recommended Items";
                  
                  const page1 = document.getElementById("slidePage1");
                  const page2 = document.getElementById("slidePage2");
-                 const slideshowContainer = document.getElementById("slideshowContainer");
                  
                  page1.innerHTML = "";
                  page2.innerHTML = "";
@@ -282,7 +282,7 @@
                    "Cleaver": "ساطور", "Stove": "بوتاجاز", "Wardrobe": "دولاب", "Chiffonier": "تسريحة"
                  };
                  
-                 allItems.forEach((item, index) => {
+                 window.recommendedItemsData.forEach((item, index) => {
                    let cleanName = item.cls.replace(/_dataset/gi, "").replace(/ dataset/gi, "").replace(/_/g, " ").trim();
                    cleanName = cleanName.replace(/\b\w/g, c => c.toUpperCase());
                    
@@ -292,13 +292,24 @@
                    }
                    
                    const displayName = isAr ? arName : cleanName;
-                   let itemPrice = Math.floor(Math.random() * (850 - 50) + 50); // basic price for visual
+                   
+                   if (!item.price) {
+                     item.price = Math.floor(Math.random() * (850 - 50) + 50); // basic price for visual
+                   }
+                   
+                   // Format price based on language
+                   let priceDisplay = `$${item.price}.00`;
+                   if (isAr) {
+                     const egpAmount = item.price * 50;
+                     priceDisplay = new Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'EGP' }).format(egpAmount);
+                   }
+
                    const cardHtml = `
                      <div class="product_card">
                        <img src="${item.imgUrl}" alt="${displayName}" onerror="this.src='images/placeholder.png'">
                        <h4>${displayName}</h4>
-                       <p>$${itemPrice}.00</p>
-                       <button class="add_cart_btn" onclick="addToCart('${item.imgUrl}', ${itemPrice}, '${displayName.replace(/'/g, "\\'")}')">
+                       <p>${priceDisplay}</p>
+                       <button class="add_cart_btn" onclick="addToCart('${item.imgUrl}', ${item.price}, '${displayName.replace(/'/g, "\\'")}')">
                          ${isAr ? 'أضف للسلة' : 'Add to Cart'}
                        </button>
                      </div>
@@ -309,6 +320,10 @@
                      page2.innerHTML += cardHtml;
                    }
                  });
+               };
+               
+               if (allItems.length > 0) {
+                 window.renderRecommendedItems();
                  
                  // Keep Welcome to Manzili visible
                  document.getElementById("recommendedSection").style.display = "block";
@@ -319,7 +334,9 @@
                    let currentSlide = 0;
                    window.recommendedInterval = setInterval(() => {
                      currentSlide = currentSlide === 0 ? 1 : 0;
-                     slideshowContainer.style.transform = `translateX(-${currentSlide * 50}%)`;
+                     const isRtl = document.documentElement.dir === 'rtl' || document.documentElement.lang === 'ar';
+                     const sign = isRtl ? '' : '-';
+                     slideshowContainer.style.transform = `translateX(${sign}${currentSlide * 50}%)`;
                    }, 5000);
                  }
                }
@@ -388,6 +405,25 @@
       });
     }
   }
+  
+  window.addEventListener('langChanged', () => {
+    if (typeof window.renderRecommendedItems === 'function') {
+      window.renderRecommendedItems();
+    }
+    const slideshowContainer = document.getElementById("slideshowContainer");
+    if (slideshowContainer && slideshowContainer.style.transform) {
+      // Extract the current slide index from the transform value
+      const match = slideshowContainer.style.transform.match(/translateX\((-?)(\d+)%\)/);
+      if (match) {
+        let isSlide2 = match[2] === "50";
+        if (isSlide2) {
+          const isRtl = document.documentElement.dir === 'rtl' || document.documentElement.lang === 'ar';
+          const sign = isRtl ? '' : '-';
+          slideshowContainer.style.transform = `translateX(${sign}50%)`;
+        }
+      }
+    }
+  });
   </script>
   <script src="js/localization.js"></script>
   <script src="js/theme.js"></script>

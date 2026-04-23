@@ -318,7 +318,13 @@ function addToCart(imageUrl, price = 199, title = "Furniture Item") {
   // Save to localStorage
   localStorage.setItem('manzili_cart', JSON.stringify(cartItems));
 
-  cart_section.style.display = "block";
+  // Remove the line that automatically opens the cart
+  // cart_section.style.display = "block";
+  const lang = localStorage.getItem('appLang') || 'en';
+  if (typeof showToast === 'function') {
+    showToast(lang === 'ar' ? 'تمت الإضافة للسلة بنجاح' : 'Added to cart successfully', 'success');
+  }
+
   update_cart_items();
 }
 
