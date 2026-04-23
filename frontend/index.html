@@ -226,82 +226,104 @@
         // --- RECOMMENDATION CAROUSEL LOGIC ---
         if (data.searchCounts) {
           const counts = data.searchCounts;
-          let maxCount = 0;
-          let topClass = null;
-          for (const [cls, count] of Object.entries(counts)) {
-            if (count > maxCount) {
-              maxCount = count;
-              topClass = cls;
-            }
-          }
+          // Sort classes by count descending
+          const sortedClasses = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(e => e[0]);
           
-          if (topClass) {
-            fetch(`http://127.0.0.1:8000/category-images?category=${encodeURIComponent(topClass)}&page=1&limit=10`)
-              .then(res => res.json())
-              .then(apiData => {
-                if (apiData.images && apiData.images.length > 0) {
-                  const isAr = document.documentElement.lang === 'ar';
-                  
-                  let cleanName = topClass.replace(/_dataset/gi, "").replace(/ dataset/gi, "").replace(/_/g, " ").trim();
-                  cleanName = cleanName.replace(/\b\w/g, c => c.toUpperCase());
-                  
-                  const dict = {
-                    "Bed": "سرير", "Chair": "كرسي", "Table": "طاولة", "Sofas": "كنبة",
-                    "Carpet": "سجادة", "Television": "تلفزيون", "Refrigerator": "ثلاجة",
-                    "Microwave": "ميكروويف", "Dishwasher": "غسالة أطباق", "Toaster": "محمصة",
-                    "Waffle Iron": "صانع وافل", "Vacuum Cleaner": "مكنسة كهربائية",
-                    "Electric Fan": "مروحة", "Hand Blower": "مجفف هواء", "Coffe Maker": "ماكينة قهوة",
-                    "Teapot": "إبريق شاي", "Crock Pot": "حلة طهي", "Mixing Bowl": "وعاء خلط",
-                    "Frying Pan": "مقلاة", "Pitcher": "إبريق", "Salt Shaker": "ملاحة",
-                    "Cleaver": "ساطور", "Stove": "بوتاجاز", "Wardrobe": "دولاب", "Chiffonier": "تسريحة"
-                  };
-                  let arName = cleanName;
-                  for (let key in dict) {
-                      if (cleanName.toLowerCase().includes(key.toLowerCase())) { arName = dict[key]; break; }
-                  }
-                  
-                  const displayName = isAr ? arName : cleanName;
-                  document.getElementById("recommendedTitle").textContent = isAr ? "عناصر مقترحة" : "Recommended Items";
-                  
-                  const page1 = document.getElementById("slidePage1");
-                  const page2 = document.getElementById("slidePage2");
-                  const slideshowContainer = document.getElementById("slideshowContainer");
-                  
-                  page1.innerHTML = "";
-                  page2.innerHTML = "";
-                  
-                  // Render items into two pages
-                  apiData.images.forEach((imgUrl, index) => {
-                    let itemPrice = Math.floor(Math.random() * (850 - 50) + 50); // basic price for visual
-                    const cardHtml = `
-                      <div class="product_card">
-                        <img src="${imgUrl}" alt="${displayName}" onerror="this.src='images/placeholder.png'">
-                        <h4>${displayName}</h4>
-                        <p>$${itemPrice}.00</p>
-                        <button class="add_cart_btn" onclick="addToCart('${imgUrl}', ${itemPrice}, '${displayName.replace(/'/g, "\\'")}')">
-                          ${isAr ? 'أضف للسلة' : 'Add to Cart'}
-                        </button>
-                      </div>
-                    `;
-                    if (index < 5) {
-                      page1.innerHTML += cardHtml;
-                    } else if (index < 10) {
-                      page2.innerHTML += cardHtml;
-                    }
-                  });
-                  
-                  // Keep Welcome to Manzili visible
-                  document.getElementById("recommendedSection").style.display = "block";
-                  
-                  // Slideshow logic
-                  let currentSlide = 0;
-                  setInterval(() => {
-                    currentSlide = currentSlide === 0 ? 1 : 0;
-                    slideshowContainer.style.transform = `translateX(-${currentSlide * 50}%)`;
-                  }, 5000);
-                }
-              })
-              .catch(err => console.error("Error fetching recommended images:", err));
+          if (sortedClasses.length > 0) {
+            let requests = [];
+            
+            if (sortedClasses.length === 1) {
+              requests.push({ cls: sortedClasses[0], limit: 10 });
+            } else if (sortedClasses.length === 2) {
+              requests.push({ cls: sortedClasses[0], limit: 7 });
+              requests.push({ cls: sortedClasses[1], limit: 3 });
+            } else {
+              requests.push({ cls: sortedClasses[0], limit: 5 });
+              requests.push({ cls: sortedClasses[1], limit: 3 });
+              requests.push({ cls: sortedClasses[2], limit: 2 });
+            }
+            
+            Promise.all(requests.map(req => 
+              fetch(`http://127.0.0.1:8000/category-images?category=${encodeURIComponent(req.cls)}&page=1&limit=${req.limit}`)
+                .then(res => res.json())
+                .then(apiData => ({ cls: req.cls, images: apiData.images || [] }))
+                .catch(err => { console.error(err); return { cls: req.cls, images: [] }; })
+            )).then(results => {
+               // Combine all images
+               let allItems = [];
+               results.forEach(res => {
+                 res.images.forEach(imgUrl => {
+                   allItems.push({ imgUrl, cls: res.cls });
+                 });
+               });
+               
+               // Shuffle the combined items to mix them visually across both pages
+               allItems = allItems.sort(() => Math.random() - 0.5);
+               
+               if (allItems.length > 0) {
+                 const isAr = document.documentElement.lang === 'ar';
+                 document.getElementById("recommendedTitle").textContent = isAr ? "عناصر مقترحة" : "Recommended Items";
+                 
+                 const page1 = document.getElementById("slidePage1");
+                 const page2 = document.getElementById("slidePage2");
+                 const slideshowContainer = document.getElementById("slideshowContainer");
+                 
+                 page1.innerHTML = "";
+                 page2.innerHTML = "";
+                 
+                 const dict = {
+                   "Bed": "سرير", "Chair": "كرسي", "Table": "طاولة", "Sofas": "كنبة",
+                   "Carpet": "سجادة", "Television": "تلفزيون", "Refrigerator": "ثلاجة",
+                   "Microwave": "ميكروويف", "Dishwasher": "غسالة أطباق", "Toaster": "محمصة",
+                   "Waffle Iron": "صانع وافل", "Vacuum Cleaner": "مكنسة كهربائية",
+                   "Electric Fan": "مروحة", "Hand Blower": "مجفف هواء", "Coffe Maker": "ماكينة قهوة",
+                   "Teapot": "إبريق شاي", "Crock Pot": "حلة طهي", "Mixing Bowl": "وعاء خلط",
+                   "Frying Pan": "مقلاة", "Pitcher": "إبريق", "Salt Shaker": "ملاحة",
+                   "Cleaver": "ساطور", "Stove": "بوتاجاز", "Wardrobe": "دولاب", "Chiffonier": "تسريحة"
+                 };
+                 
+                 allItems.forEach((item, index) => {
+                   let cleanName = item.cls.replace(/_dataset/gi, "").replace(/ dataset/gi, "").replace(/_/g, " ").trim();
+                   cleanName = cleanName.replace(/\b\w/g, c => c.toUpperCase());
+                   
+                   let arName = cleanName;
+                   for (let key in dict) {
+                       if (cleanName.toLowerCase().includes(key.toLowerCase())) { arName = dict[key]; break; }
+                   }
+                   
+                   const displayName = isAr ? arName : cleanName;
+                   let itemPrice = Math.floor(Math.random() * (850 - 50) + 50); // basic price for visual
+                   const cardHtml = `
+                     <div class="product_card">
+                       <img src="${item.imgUrl}" alt="${displayName}" onerror="this.src='images/placeholder.png'">
+                       <h4>${displayName}</h4>
+                       <p>$${itemPrice}.00</p>
+                       <button class="add_cart_btn" onclick="addToCart('${item.imgUrl}', ${itemPrice}, '${displayName.replace(/'/g, "\\'")}')">
+                         ${isAr ? 'أضف للسلة' : 'Add to Cart'}
+                       </button>
+                     </div>
+                   `;
+                   if (index < 5) {
+                     page1.innerHTML += cardHtml;
+                   } else if (index < 10) {
+                     page2.innerHTML += cardHtml;
+                   }
+                 });
+                 
+                 // Keep Welcome to Manzili visible
+                 document.getElementById("recommendedSection").style.display = "block";
+                 
+                 // Slideshow logic - only slide if more than 5 items
+                 if (allItems.length > 5) {
+                   if (window.recommendedInterval) clearInterval(window.recommendedInterval);
+                   let currentSlide = 0;
+                   window.recommendedInterval = setInterval(() => {
+                     currentSlide = currentSlide === 0 ? 1 : 0;
+                     slideshowContainer.style.transform = `translateX(-${currentSlide * 50}%)`;
+                   }, 5000);
+                 }
+               }
+            });
           }
         }
         // -------------------------------------
