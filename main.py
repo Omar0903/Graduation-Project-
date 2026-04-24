@@ -21,6 +21,9 @@ import smtplib
 import time
 import traceback
 from email.mime.text import MIMEText
+from pydantic import BaseModel
+from typing import List
+from collections import Counter
 
 app = FastAPI()
 
@@ -217,36 +220,95 @@ async def search_text(query: str, k: int = 50):
     })
 
 # =========================
+# CHECKOUT API
+# =========================
+class PurchaseItem(BaseModel):
+    imageUrl: str
+    category: str
+    price: float
+    quantity: int
+
+class CheckoutRequest(BaseModel):
+    items: List[PurchaseItem]
+
+@app.post("/checkout")
+async def checkout(data: CheckoutRequest):
+    purchases_file = "purchases.json"
+    if os.path.exists(purchases_file):
+        with open(purchases_file, "r", encoding="utf-8") as f:
+            try:
+                purchases = json.load(f)
+            except:
+                purchases = []
+    else:
+        purchases = []
+        
+    for item in data.items:
+        purchases.append(item.dict())
+        
+    with open(purchases_file, "w", encoding="utf-8") as f:
+        json.dump(purchases, f, indent=4, ensure_ascii=False)
+        
+    return JSONResponse({"status": "success", "message": "Checkout recorded"})
+
+# =========================
 # BEST SELLERS API
 # =========================
 @app.get("/best-sellers")
 async def get_best_sellers(limit: int = 5):
-    if not furniture_data:
-        return JSONResponse({"items": []})
-        
-    # Use a fixed seed for consistent "best sellers" or just pick the top items
-    random.seed(42)
-    best = random.sample(furniture_data, min(limit, len(furniture_data)))
-    random.seed() # reset
+    best_items = []
+    purchases_file = "purchases.json"
     
-    items = []
-    seen_images = set()
-    for item in best:
-        img_path = item.get("image", "")
-        clean_path = img_path.replace('\\', '/')
-        data_index = clean_path.find('data/')
-        if data_index != -1:
-            img_path = clean_path[data_index:]
+    if os.path.exists(purchases_file):
+        with open(purchases_file, "r", encoding="utf-8") as f:
+            try:
+                purchases = json.load(f)
+            except:
+                purchases = []
+                
+        # Count items by image URL
+        item_counts = Counter(p["imageUrl"] for p in purchases)
+        most_common = item_counts.most_common(limit)
+        
+        for img, count in most_common:
+            # Find the first record to get its price and category
+            for p in purchases:
+                if p["imageUrl"] == img:
+                    best_items.append({
+                        "image": img,
+                        "price": p.get("price", 199),
+                        "category": p.get("category", "Best Seller"),
+                        "purchases": count
+                    })
+                    break
+                    
+    # Fill the rest with random items if not enough purchases
+    if len(best_items) < limit and furniture_data:
+        random.seed(42)
+        fallback_items = random.sample(furniture_data, min(limit, len(furniture_data)))
+        random.seed()
+        
+        for item in fallback_items:
+            if len(best_items) >= limit:
+                break
+                
+            img_path = item.get("image", "")
+            clean_path = img_path.replace('\\', '/')
+            data_index = clean_path.find('data/')
+            if data_index != -1:
+                img_path = clean_path[data_index:]
+                
+            full_url = f"http://127.0.0.1:8000/{img_path}"
             
-        if img_path not in seen_images:
-            seen_images.add(img_path)
-            items.append({
-                "image": f"http://127.0.0.1:8000/{img_path}",
-                "price": item.get("price", 199),
-                "category": item.get("category", "Best Seller")
-            })
-            
-    return JSONResponse({"items": items})
+            # Prevent duplicates
+            if not any(b["image"].endswith(img_path) or b["image"] == full_url for b in best_items):
+                best_items.append({
+                    "image": full_url,
+                    "price": item.get("price", 199),
+                    "category": item.get("category", "Best Seller")
+                })
+                
+    return JSONResponse({"items": best_items[:limit]})
 
 # =========================
 # CATEGORIES API

@@ -553,6 +553,69 @@ if (exit_cart_section_mark && cart_section) {
 }
 
 // ==========================
+// Checkout Logic
+// ==========================
+const checkoutBtn = document.querySelector(".checkout-btn");
+if (checkoutBtn) {
+  checkoutBtn.addEventListener("click", async () => {
+    if (cartItems.length === 0) {
+      const isAr = localStorage.getItem('appLang') === 'ar';
+      if(typeof showToast !== "undefined") {
+          showToast(isAr ? "السلة فارغة" : "Cart is empty", "error");
+      } else {
+          alert(isAr ? "السلة فارغة" : "Cart is empty");
+      }
+      return;
+    }
+    
+    // Check if user is logged in
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true" || sessionStorage.getItem("isLoggedIn") === "true";
+    if (!isLoggedIn) {
+       const isAr = localStorage.getItem('appLang') === 'ar';
+       if(typeof showToast !== "undefined") showToast(isAr ? "يرجى تسجيل الدخول أولاً" : "Please login first", "error");
+       setTimeout(() => { window.location.href = "login.html"; }, 1500);
+       return;
+    }
+    
+    // Prepare data
+    const payload = {
+      items: cartItems.map(item => ({
+        imageUrl: item.imageUrl,
+        category: item.category || "Product",
+        price: item.price || 0,
+        quantity: item.quantity || 1
+      }))
+    };
+    
+    try {
+      checkoutBtn.disabled = true;
+      const response = await fetch("http://127.0.0.1:8000/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      if (data.status === "success") {
+        const isAr = localStorage.getItem('appLang') === 'ar';
+        if(typeof showToast !== "undefined") showToast(isAr ? "تم إتمام الطلب بنجاح" : "Checkout successful", "success");
+        cartItems = [];
+        localStorage.setItem('manzili_cart', JSON.stringify(cartItems));
+        update_cart_items();
+        cart_section.style.display = "none";
+      } else {
+        if(typeof showToast !== "undefined") showToast("Error processing checkout");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      if(typeof showToast !== "undefined") showToast("Server error during checkout");
+    } finally {
+      checkoutBtn.disabled = false;
+    }
+  });
+}
+
+// ==========================
 // Initial State
 // ==========================
 hideFileName();
