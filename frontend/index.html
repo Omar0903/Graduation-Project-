@@ -101,6 +101,36 @@
       flex-shrink: 0;
       margin: 0;
     }
+    
+    /* Skeleton Loader Styling */
+    .skeleton-card {
+      background: rgba(200, 200, 200, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      height: 320px;
+      width: calc(20% - 20px); /* Assuming 5 cards fit nicely */
+      min-width: 200px;
+    }
+    html[data-theme="dark"] .skeleton-card {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .skeleton-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: loadingSkeleton 1.5s infinite;
+    }
+    html[data-theme="dark"] .skeleton-card::after {
+       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    }
+    @keyframes loadingSkeleton {
+      100% { left: 100%; }
+    }
   </style>
 
   <main class="page">
@@ -188,6 +218,8 @@
     dropdownMenu.classList.remove("show");
     userInfo.textContent = isAr ? "مرحباً، مستخدم" : "Hello, User";
     userInfo.setAttribute('data-i18n', 'hello_user');
+    const recSection = document.getElementById("recommendedSection");
+    if (recSection) recSection.style.display = "none";
   }
   
   function setLoggedInUI(username) {
@@ -230,6 +262,12 @@
           const sortedClasses = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(e => e[0]);
           
           if (sortedClasses.length > 0) {
+            // Show skeleton loaders immediately while fetching
+            document.getElementById("recommendedSection").style.display = "block";
+            const page1 = document.getElementById("slidePage1");
+            page1.innerHTML = Array(5).fill('<div class="skeleton-card"></div>').join('');
+            document.getElementById("slidePage2").innerHTML = "";
+
             let requests = [];
             
             if (sortedClasses.length === 1) {
@@ -340,8 +378,12 @@
                    }, 5000);
                  }
                }
-            });
+             });
+          } else {
+             document.getElementById("recommendedSection").style.display = "none";
           }
+        } else {
+           document.getElementById("recommendedSection").style.display = "none";
         }
         // -------------------------------------
       } else {
@@ -424,6 +466,18 @@
       }
     }
   });
+
+  // Immediately show skeleton if user is likely logged in
+  if (isLoggedIn()) {
+    const recSection = document.getElementById("recommendedSection");
+    recSection.style.display = "block";
+    const page1 = document.getElementById("slidePage1");
+    if (page1) {
+      page1.innerHTML = Array(5).fill('<div class="skeleton-card"></div>').join('');
+    }
+    const page2 = document.getElementById("slidePage2");
+    if (page2) page2.innerHTML = "";
+  }
   </script>
   <script src="js/localization.js"></script>
   <script src="js/theme.js"></script>
