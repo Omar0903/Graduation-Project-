@@ -150,7 +150,24 @@ async function sendImageToAPI(file) {
 async function sendTextSearch(query) {
   if (!query) return;
 
+  // If we are NOT on text_search.html, redirect there with the query
+  if (!window.location.pathname.includes("text_search.html")) {
+    window.location.href = `text_search.html?q=${encodeURIComponent(query)}`;
+    return;
+  }
+
+  // Update URL to match search and allow refreshing
+  const newUrl = new URL(window.location);
+  newUrl.searchParams.set('q', query);
+  window.history.pushState({}, '', newUrl);
+
+  // Otherwise, we ARE on text_search.html, so do the search
   try {
+    const resultsGrid = document.getElementById("resultsGrid");
+    if (resultsGrid) {
+        const lang = localStorage.getItem('appLang') || 'en';
+        resultsGrid.innerHTML = `<h2>${lang === 'ar' ? 'جاري البحث...' : 'Searching...'}</h2>`;
+    }
     const response = await fetch(`http://127.0.0.1:8000/search-text?query=${encodeURIComponent(query)}`);
     const data = await response.json();
     console.log("TEXT SEARCH RESULT:", data);
@@ -165,17 +182,18 @@ async function sendTextSearch(query) {
         }
 
         showResults(data);
-        resultsSection.style.display = "block";
+        if (resultsSection) resultsSection.style.display = "block";
         
         // Scroll to results
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        if (resultsSection) resultsSection.scrollIntoView({ behavior: 'smooth' });
     } else {
+        if (resultsGrid) resultsGrid.innerHTML = "";
         const lang = localStorage.getItem('appLang') || 'en';
-        showToast(lang === 'ar' ? "لم يتم العثور على نتائج" : "No results found");
+        if(typeof showToast !== 'undefined') showToast(lang === 'ar' ? "لم يتم العثور على نتائج" : "No results found", "error");
     }
   } catch (error) {
     console.error(error);
-    showToast("Server error - تأكد إن الباك إند شغال");
+    if(typeof showToast !== 'undefined') showToast("Server error - تأكد إن الباك إند شغال", "error");
   }
 }
 
@@ -924,10 +942,16 @@ window.loadBestSellers = async function() {
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const categoryId = urlParams.get('class');
+  const textQuery = urlParams.get('q');
   
   // Check if we are on best_sellers.html
   if (window.location.pathname.includes('best_sellers.html')) {
     if (window.loadBestSellers) window.loadBestSellers();
+  } else if (window.location.pathname.includes('text_search.html')) {
+    // Auto-search if ?q is present
+    if (textQuery) {
+        sendTextSearch(textQuery);
+    }
   } else if (categoryId) {
     loadCategoryImages(categoryId, 1);
     populateSidebar(categoryId);
